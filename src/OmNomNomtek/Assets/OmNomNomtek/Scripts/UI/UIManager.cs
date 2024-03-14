@@ -9,9 +9,9 @@ namespace OmNomNomtek.UI
       // do nothing
     }
 
-    public void OnListItemClicked()
+    public void OnListItemClicked(GameObject p)
     {
-      Debug.Log($"Item clicked!");
+      Debug.Log($"Item clicked! p = {p}");
     }
   }
 }
