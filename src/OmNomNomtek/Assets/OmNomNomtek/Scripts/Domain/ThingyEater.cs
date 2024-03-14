@@ -1,4 +1,6 @@
+using System.Runtime.InteropServices;
 using OmNomNomtek.Services;
+using OmNomNomtek.Utils;
 using UnityEngine;
 
 namespace OmNomNomtek.Domain
@@ -42,6 +44,22 @@ namespace OmNomNomtek.Domain
 
         // TODO: 2024-03-14 - Immortal - HI - rotation speed; lerp
         this.transform.rotation = Quaternion.LookRotation(direction);
+      }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+      if (_thingyToSeek == null)
+      {
+        return;
+      }
+
+      if (collision.gameObject == _thingyToSeek.gameObject)
+      {
+        // NOTE - could be an event; this is simpler
+        _thingyInteractionsManager.EatThingy(this, _thingyToSeek);
+
+        StopSeeking();
       }
     }
 

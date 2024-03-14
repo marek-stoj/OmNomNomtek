@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ImmSoft.UnityToolbelt.Utils;
 using OmNomNomtek.Domain;
 using OmNomNomtek.Utils;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace OmNomNomtek.Services
@@ -93,6 +95,27 @@ namespace OmNomNomtek.Services
         potentialTargets.FirstOrDefault();
 
       return thingyToSeek;
+    }
+
+    // TODO: 2024-03-14 - Immortal - HI - keep track of all the eaters and make them stop seeking if they were seeking the eaten thingy
+    public void EatThingy(ThingyEater thingyEater, InteractableThingy thingyToSeek)
+    {
+      // NOTE: just for sanity
+      if (_interactableThingyBeingDragged == thingyToSeek)
+      {
+        _interactableThingyBeingDragged = null;
+      }
+
+      // NOTE: this too
+      if (thingyToSeek.IsBeingDragged)
+      {
+        thingyToSeek.StopDragging();
+      }
+
+      // NOTE: could use a HashSet/Dictionary for better performance
+      _thingies.Remove(thingyToSeek);
+
+      Destroy(thingyToSeek.gameObject);
     }
 
     public GameObject Floor => _floor;
