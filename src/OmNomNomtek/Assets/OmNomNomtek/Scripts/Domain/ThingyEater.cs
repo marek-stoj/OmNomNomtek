@@ -1,6 +1,6 @@
-using System.Runtime.InteropServices;
+using ImmSoft.UnityToolbelt.Utils;
 using OmNomNomtek.Services;
-using OmNomNomtek.Utils;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace OmNomNomtek.Domain
@@ -25,18 +25,15 @@ namespace OmNomNomtek.Domain
         return;
       }
 
-      if (_thingyToSeek == null)
+      // some other eater could have eaten our target thingy first,
+      // so we need to stop seeking if that happens
+      if (_thingyToSeek.IsDestroyed())
       {
-        // TODO: 2024-03-14 - Immortal - HI - make sure this is efficient (maybe call it only once in a while?)
-        InteractableThingy targetToSeek =
-          _thingyInteractionsManager.RequestThingyToSeek(this);
-
-        if (targetToSeek != null)
-        {
-          StartSeeking(targetToSeek);
-        }
+        StopSeeking();
+        return;
       }
-      else
+
+      if (_thingyToSeek != null)
       {
         Vector3 direction = _thingyToSeek.transform.position - this.transform.position;
 
@@ -68,18 +65,47 @@ namespace OmNomNomtek.Domain
       _thingyInteractionsManager = thingyInteractionsManager;
     }
 
+    public void StartRequestingForThingyToSeek()
+    {
+      this.RunEverySeconds(
+        _thingyInteractionsManager.SeekRequestFrequencyInSeconds,
+         KeepRequestingThingiesToSeek
+      );
+    }
+
     public void StartSeeking(InteractableThingy thingyToSeek)
     {
-      Debug.Log($"Start seeking {thingyToSeek.gameObject.name}!");
+      Debug.Log($"ThingyEater.StartSeeking: {thingyToSeek.gameObject.name}!");
 
       _thingyToSeek = thingyToSeek;
     }
 
     public void StopSeeking()
     {
-      Debug.Log($"Stop seeking!");
+      Debug.Log($"ThingyEater.StopSeeking!");
 
       _thingyToSeek = null;
+    }
+
+    private void KeepRequestingThingiesToSeek()
+    {
+      if (_thingyToSeek != null)
+      {
+        return;
+      }
+
+      if (_thingyInteractionsManager.IsBeingDragged(this.gameObject))
+      {
+        return;
+      }
+
+      InteractableThingy targetToSeek =
+        _thingyInteractionsManager.RequestThingyToSeek(this);
+
+      if (targetToSeek != null)
+      {
+        StartSeeking(targetToSeek);
+      }
     }
   }
 }

@@ -1,10 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using ImmSoft.UnityToolbelt.Utils;
 using OmNomNomtek.Domain;
 using OmNomNomtek.Utils;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace OmNomNomtek.Services
@@ -19,6 +17,9 @@ namespace OmNomNomtek.Services
 
     [SerializeField]
     private float _defaultPlacementDepth = 3.0f;
+
+    [SerializeField]
+    private float _seekRequestFrequencyInSeconds = 0.5f;
 
     private List<InteractableThingy> _thingies;
 
@@ -45,10 +46,9 @@ namespace OmNomNomtek.Services
 
     public bool IsBeingDragged(GameObject thingy)
     {
-      return
-          _interactableThingyBeingDragged != null
-        &&
-          _interactableThingyBeingDragged.gameObject == thingy;
+      return true
+        && _interactableThingyBeingDragged != null
+        && _interactableThingyBeingDragged.gameObject == thingy;
     }
 
     public void SpawnThingy(GameObject thingyPrefab)
@@ -76,10 +76,17 @@ namespace OmNomNomtek.Services
         interactableThingy.StartDragging();
 
         _interactableThingyBeingDragged = interactableThingy;
+
+        if (thingyEater != null)
+        {
+          thingyEater.StartRequestingForThingyToSeek();
+        }
       });
     }
 
-    // TODO: 2024-03-14 - Immortal - HI - make sure this is efficient (maybe call it only once in a while?)
+    /// <remarks>
+    /// Don't call in an Update(). It's not efficient. Every once in a while is fine.
+    /// </remarks>
     public InteractableThingy RequestThingyToSeek(ThingyEater thingyEater)
     {
       IEnumerable<InteractableThingy> potentialTargets =
@@ -90,14 +97,14 @@ namespace OmNomNomtek.Services
             && t.gameObject != thingyEater.gameObject
         );
 
-      // TODO: 2024-03-14 - Immortal - HI - find the closest one
       InteractableThingy thingyToSeek =
-        potentialTargets.FirstOrDefault();
+        potentialTargets.OrderBy(
+          t => Vector3.Distance(thingyEater.transform.position, t.transform.position)
+        ).FirstOrDefault();
 
       return thingyToSeek;
     }
 
-    // TODO: 2024-03-14 - Immortal - HI - keep track of all the eaters and make them stop seeking if they were seeking the eaten thingy
     public void EatThingy(ThingyEater thingyEater, InteractableThingy thingyToSeek)
     {
       // NOTE: just for sanity
@@ -121,6 +128,8 @@ namespace OmNomNomtek.Services
     public GameObject Floor => _floor;
 
     public float DefaultPlacementDepth => _defaultPlacementDepth;
+
+    public float SeekRequestFrequencyInSeconds => _seekRequestFrequencyInSeconds;
 
     public bool IsDragging => _interactableThingyBeingDragged != null;
   }
