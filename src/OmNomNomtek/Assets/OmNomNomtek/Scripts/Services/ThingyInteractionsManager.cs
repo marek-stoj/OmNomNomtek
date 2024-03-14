@@ -81,7 +81,12 @@ namespace OmNomNomtek.Services
     public InteractableThingy RequestThingyToSeek(ThingyEater thingyEater)
     {
       IEnumerable<InteractableThingy> potentialTargets =
-        _thingies.Where(t => t.IsTargetable && t.gameObject != thingyEater.gameObject);
+        _thingies.Where(
+          t => true
+            && t.IsTargetable
+            && !t.IsBeingDragged
+            && t.gameObject != thingyEater.gameObject
+        );
 
       // TODO: 2024-03-14 - Immortal - HI - find the closest one
       InteractableThingy thingyToSeek =

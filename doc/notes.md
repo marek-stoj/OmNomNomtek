@@ -2,5 +2,8 @@
 
 - data binding using eg. Peppermint DataBinding asset for items, collections, etc.
 - separate models for item configs and view models for binding
+
+- git - go quick
+
 -
 

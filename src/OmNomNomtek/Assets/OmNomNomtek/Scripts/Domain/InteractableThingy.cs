@@ -95,5 +95,7 @@ namespace OmNomNomtek.Domain
     }
 
     public bool IsTargetable => _isTargetable;
+
+    public bool IsBeingDragged => _isBeingDragged;
   }
 }
