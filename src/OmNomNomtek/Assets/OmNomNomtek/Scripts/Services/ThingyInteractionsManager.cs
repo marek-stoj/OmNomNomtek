@@ -1,8 +1,9 @@
+using OmNomNomtek.Domain;
 using UnityEngine;
 
-namespace OmNomNomtek
+namespace OmNomNomtek.Services
 {
-  public class InteractionsManager : MonoBehaviour
+  public class ThingyInteractionsManager : MonoBehaviour
   {
     private InteractableThingy _interactableThingyBeingDragged;
 

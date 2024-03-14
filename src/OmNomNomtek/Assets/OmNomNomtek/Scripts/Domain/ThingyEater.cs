@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace OmNomNomtek
+namespace OmNomNomtek.Domain
 {
   public class ThingyEater : MonoBehaviour
   {

@@ -1,7 +1,7 @@
 using ImmSoft.UnityToolbelt.Utils;
 using UnityEngine;
 
-namespace OmNomNomtek
+namespace OmNomNomtek.Domain
 {
   public class ThingyEaterTester : MonoBehaviour
   {

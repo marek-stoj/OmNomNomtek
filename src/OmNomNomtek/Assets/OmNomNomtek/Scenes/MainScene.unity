@@ -1266,6 +1266,52 @@ Transform:
   m_Father: {fileID: 546257447}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &473492602
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 473492603}
+  - component: {fileID: 473492604}
+  m_Layer: 0
+  m_Name: Testers
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &473492603
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 473492602}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 783100427}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &473492604
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 473492602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0270f8cecdf4a46478378a5d8cf1d16c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _thingyEater: {fileID: 1916479568}
+  _thingy: {fileID: 1743635914}
 --- !u!1 &514576824
 GameObject:
   m_ObjectHideFlags: 0
@@ -1277,7 +1323,7 @@ GameObject:
   - component: {fileID: 514576825}
   - component: {fileID: 514576826}
   m_Layer: 0
-  m_Name: InteractionsManager
+  m_Name: ThingyInteractionsManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1997,8 +2043,9 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1918552602}
-  - {fileID: 514576825}
   - {fileID: 2084264735}
+  - {fileID: 514576825}
+  - {fileID: 473492603}
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4369,11 +4416,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1918552601}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0270f8cecdf4a46478378a5d8cf1d16c, type: 3}
+  m_Script: {fileID: 11500000, guid: 3e1210dda48c93a458334ed772d10669, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _thingyEater: {fileID: 1916479568}
-  _thingy: {fileID: 1743635914}
 --- !u!1 &1939301810
 GameObject:
   m_ObjectHideFlags: 0

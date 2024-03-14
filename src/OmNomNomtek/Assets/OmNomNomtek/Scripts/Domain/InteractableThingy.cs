@@ -1,7 +1,7 @@
 using OmNomNomtek.Utils;
 using UnityEngine;
 
-namespace OmNomNomtek
+namespace OmNomNomtek.Domain
 {
   public class InteractableThingy : MonoBehaviour
   {
