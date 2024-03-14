@@ -32,15 +32,22 @@ namespace OmNomNomtek.Services
 
     private void Update()
     {
-      if (_interactableThingyBeingDragged == null)
+      if (_interactableThingyBeingDragged != null)
       {
-        return;
-      }
+        if (Input.GetKeyUp(KeyCode.Escape))
+        {
+          _interactableThingyBeingDragged.StopDragging();
+          _thingies.Remove(_interactableThingyBeingDragged);
 
-      if (Input.GetMouseButtonUp(0))
-      {
-        _interactableThingyBeingDragged.StopDragging();
-        _interactableThingyBeingDragged = null;
+          Destroy(_interactableThingyBeingDragged.gameObject);
+
+          _interactableThingyBeingDragged = null;
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+          _interactableThingyBeingDragged.StopDragging();
+          _interactableThingyBeingDragged = null;
+        }
       }
     }
 
