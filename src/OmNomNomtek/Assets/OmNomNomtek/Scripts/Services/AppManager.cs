@@ -21,9 +21,5 @@ namespace OmNomNomtek.Services
     {
       // do nothing
     }
-
-    private void BindThingyList()
-    {
-    }
   }
 }

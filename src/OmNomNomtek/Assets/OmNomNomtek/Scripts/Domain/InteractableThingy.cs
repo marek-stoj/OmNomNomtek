@@ -6,12 +6,14 @@ namespace OmNomNomtek.Domain
   public class InteractableThingy : MonoBehaviour
   {
     private Rigidbody _rigidbody;
+    private bool _initialIsKinematic;
 
     private bool _isBeingDragged;
 
     private void Awake()
     {
       _rigidbody = this.GetComponentInChildrenSafe<Rigidbody>();
+      _initialIsKinematic = _rigidbody.isKinematic;
     }
 
     public void StartDragging()
@@ -26,7 +28,7 @@ namespace OmNomNomtek.Domain
     {
       Debug.Log($"Stop dragging {gameObject.name}!");
 
-      _rigidbody.isKinematic = false;
+      _rigidbody.isKinematic = _initialIsKinematic;
       _isBeingDragged = false;
     }
 

@@ -20,10 +20,10 @@ namespace OmNomNomtek.Services
       InteractableThingy interactableThingy =
         thingyGameObject.GetComponentSafe<InteractableThingy>();
 
+      interactableThingy.StartDragging();
+
       this.RunAtEndOfFrame(() =>
       {
-        interactableThingy.StartDragging();
-
         _interactableThingyBeingDragged = interactableThingy;
       });
     }

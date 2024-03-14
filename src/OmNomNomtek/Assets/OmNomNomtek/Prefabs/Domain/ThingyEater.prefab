@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1591315766013971140}
   - component: {fileID: 1591315766013971163}
+  - component: {fileID: 7214312452942426915}
+  - component: {fileID: 5037073096245203262}
   m_Layer: 0
   m_Name: ThingyEater
   m_TagString: Untagged
@@ -31,7 +33,7 @@ Transform:
   m_Children:
   - {fileID: 1591315766226869084}
   m_Father: {fileID: 0}
-  m_RootOrder: -1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1591315766013971163
 MonoBehaviour:
@@ -45,7 +47,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 216ef55e6bbbfe64e936509919fa1113, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 0.2
+  _movementSpeed: 1
+  _rotationSpeed: 1
+  _gameObjectToFollow: {fileID: 0}
+--- !u!114 &7214312452942426915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1591315766013971141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d54a2a0c9f52f57458fe4f0596e6622e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!54 &5037073096245203262
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1591315766013971141}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &1591315766226869085
 GameObject:
   m_ObjectHideFlags: 0
@@ -109,7 +141,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 400d387e8f0d05e48bd0ddfceb5c9de1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -205,7 +237,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 400d387e8f0d05e48bd0ddfceb5c9de1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
