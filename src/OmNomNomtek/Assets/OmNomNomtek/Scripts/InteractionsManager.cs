@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace OmNomNomtek
 {
-  public class InteractionManager : MonoBehaviour
+  public class InteractionsManager : MonoBehaviour
   {
     private InteractableThingy _interactableThingyBeingDragged;
 
