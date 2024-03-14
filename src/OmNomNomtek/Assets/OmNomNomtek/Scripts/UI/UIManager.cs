@@ -51,6 +51,11 @@ namespace OmNomNomtek.UI
 
     private void OnListItemClicked(ThingyListItem thingyListItem)
     {
+      if (_thingyInteractionsManager.IsDragging)
+      {
+        return;
+      }
+
       _thingyInteractionsManager.SpawnThingy(thingyListItem.Prefab);
     }
   }

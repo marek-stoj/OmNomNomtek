@@ -9,13 +9,13 @@ namespace OmNomNomtek.Domain
     private ThingyEater _thingyEater;
 
     [SerializeField]
-    private GameObject _thingy;
+    private InteractableThingy _thingy;
 
     private void Start()
     {
       this.RunDelayed(1.0f, () =>
       {
-        _thingyEater.StartFollowing(_thingy);
+        _thingyEater.StartSeeking(_thingy);
       });
     }
   }

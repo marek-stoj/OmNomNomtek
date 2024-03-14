@@ -1,3 +1,5 @@
+using System;
+using OmNomNomtek.Services;
 using UnityEngine;
 
 namespace OmNomNomtek.Domain
@@ -11,32 +13,56 @@ namespace OmNomNomtek.Domain
     private float _rotationSpeed = 1.0f;
 
     [SerializeField]
-    private GameObject _gameObjectToFollow;
+    private InteractableThingy _thingyToSeek;
+
+    private ThingyInteractionsManager _thingyInteractionsManager;
 
     private void FixedUpdate()
     {
-      if (_gameObjectToFollow != null)
+      if (_thingyInteractionsManager.IsBeingDragged(this.gameObject))
       {
-        Vector3 direction = _gameObjectToFollow.transform.position - this.transform.position;
+        return;
+      }
+
+      if (_thingyToSeek == null)
+      {
+        // TODO: 2024-03-14 - Immortal - HI - make sure this is efficient (maybe call it only once in a while?)
+        InteractableThingy targetToSeek =
+          _thingyInteractionsManager.RequestThingyToSeek(this);
+
+        if (targetToSeek != null)
+        {
+          StartSeeking(targetToSeek);
+        }
+      }
+      else
+      {
+        Vector3 direction = _thingyToSeek.transform.position - this.transform.position;
 
         this.transform.position += direction.normalized * _movementSpeed * Time.fixedDeltaTime;
 
+        // TODO: 2024-03-14 - Immortal - HI - rotation speed; lerp
         this.transform.rotation = Quaternion.LookRotation(direction);
       }
     }
 
-    public void StartFollowing(GameObject gameObject)
+    public void Init(ThingyInteractionsManager thingyInteractionsManager)
     {
-      Debug.Log($"Start following {gameObject.name}!");
-
-      _gameObjectToFollow = gameObject;
+      _thingyInteractionsManager = thingyInteractionsManager;
     }
 
-    public void StopFollowing()
+    public void StartSeeking(InteractableThingy thingyToSeek)
     {
-      Debug.Log($"Stop following!");
+      Debug.Log($"Start seeking {thingyToSeek.gameObject.name}!");
 
-      _gameObjectToFollow = null;
+      _thingyToSeek = thingyToSeek;
+    }
+
+    public void StopSeeking()
+    {
+      Debug.Log($"Stop seeking!");
+
+      _thingyToSeek = null;
     }
   }
 }

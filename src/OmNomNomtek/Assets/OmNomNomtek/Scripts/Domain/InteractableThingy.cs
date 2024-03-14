@@ -5,6 +5,9 @@ namespace OmNomNomtek.Domain
 {
   public class InteractableThingy : MonoBehaviour
   {
+    [SerializeField]
+    private bool _isTargetable;
+
     private Rigidbody _rigidbody;
     private bool _initialIsKinematic;
 
@@ -16,12 +19,27 @@ namespace OmNomNomtek.Domain
       _initialIsKinematic = _rigidbody.isKinematic;
     }
 
+    private void Start()
+    {
+      UpdatePosition();
+    }
+
+    private void Update()
+    {
+      if (_isBeingDragged)
+      {
+        UpdatePosition();
+      }
+    }
+
     public void StartDragging()
     {
       Debug.Log($"Start dragging {gameObject.name}!");
 
       _rigidbody.isKinematic = true;
       _isBeingDragged = true;
+
+      UpdatePosition();
     }
 
     public void StopDragging()
@@ -32,19 +50,22 @@ namespace OmNomNomtek.Domain
       _isBeingDragged = false;
     }
 
-    private void Update()
+    private void UpdatePosition()
     {
-      if (_isBeingDragged)
-      {
-        Vector3 newPosition =
-          Camera.main.ScreenToWorldPoint(
-            new Vector3(Input.mousePosition.x,
+      // TODO: 2024-03-14 - Immortal - HI - snapping
+      // TODO: 2024-03-14 - Immortal - HI - depth
+      Vector3 newPosition =
+        Camera.main.ScreenToWorldPoint(
+          new Vector3(
+            Input.mousePosition.x,
             Input.mousePosition.y,
-            3.0f)
-          );
+            3.0f
+          )
+        );
 
-        this.transform.position = newPosition;
-      }
+      this.transform.position = newPosition;
     }
+
+    public bool IsTargetable => _isTargetable;
   }
 }
