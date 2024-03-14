@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ImmSoft.UnityToolbelt.Utils;
@@ -9,6 +10,11 @@ namespace OmNomNomtek.Services
 {
   public class ThingyInteractionsManager : MonoBehaviour
   {
+    // NOTE: could use EventArgs
+    public event Action<InteractableThingy> ThingySpawned;
+    public event Action ThingySpawnCancelled;
+    public event Action<InteractableThingy> ThingyPlaced;
+
     [SerializeField]
     private GameObject _thingiesParent;
 
@@ -42,11 +48,18 @@ namespace OmNomNomtek.Services
           Destroy(_interactableThingyBeingDragged.gameObject);
 
           _interactableThingyBeingDragged = null;
+
+          ThingySpawnCancelled?.Invoke();
         }
         else if (Input.GetMouseButtonUp(0))
         {
-          _interactableThingyBeingDragged.StopDragging();
+          InteractableThingy currentThingy = _interactableThingyBeingDragged;
+
+          currentThingy.StopDragging();
+
           _interactableThingyBeingDragged = null;
+
+          ThingyPlaced?.Invoke(currentThingy);
         }
       }
     }
@@ -88,6 +101,8 @@ namespace OmNomNomtek.Services
         {
           thingyEater.StartRequestingForThingyToSeek();
         }
+
+        ThingySpawned?.Invoke(interactableThingy);
       });
     }
 

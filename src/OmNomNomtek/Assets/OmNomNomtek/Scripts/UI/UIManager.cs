@@ -1,6 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 using OmNomNomtek.Config;
+using OmNomNomtek.Domain;
 using OmNomNomtek.Services;
 using OmNomNomtek.Utils;
 using UnityEngine;
@@ -9,6 +12,8 @@ namespace OmNomNomtek.UI
 {
   public class UIManager : MonoBehaviour
   {
+    private const float _SidePanelCloseDurationInSeconds = 0.2f;
+
     [SerializeField]
     private ThingyInteractionsManager _thingyInteractionsManager;
 
@@ -17,6 +22,20 @@ namespace OmNomNomtek.UI
 
     [SerializeField]
     private GameObject _listItemPrefab;
+
+    private void OnEnable()
+    {
+      _thingyInteractionsManager.ThingySpawned += OnThingySpawned;
+      _thingyInteractionsManager.ThingySpawnCancelled += OnThingySpawnCancelled;
+      _thingyInteractionsManager.ThingyPlaced += OnThingyPlaced;
+    }
+
+    private void OnDisable()
+    {
+      _thingyInteractionsManager.ThingySpawned -= OnThingySpawned;
+      _thingyInteractionsManager.ThingySpawnCancelled -= OnThingySpawnCancelled;
+      _thingyInteractionsManager.ThingyPlaced -= OnThingyPlaced;
+    }
 
     private void Update()
     {
@@ -55,6 +74,32 @@ namespace OmNomNomtek.UI
       }
 
       _thingyInteractionsManager.SpawnThingy(thingyListItem.Prefab);
+    }
+
+    private void OnThingySpawned(InteractableThingy thingy)
+    {
+      ToggleSidePanel(visible: false);
+    }
+
+    private void OnThingySpawnCancelled()
+    {
+      ToggleSidePanel(visible: true);
+    }
+
+    private void OnThingyPlaced(InteractableThingy thingy)
+    {
+      ToggleSidePanel(visible: true);
+    }
+
+    private void ToggleSidePanel(bool visible)
+    {
+      _scrollView.transform.DOMoveX(
+        endValue:
+          visible
+            ? 0
+            : -_scrollView.GetComponentSafe<RectTransform>().rect.width,
+        duration: _SidePanelCloseDurationInSeconds
+      );
     }
   }
 }
