@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using OmNomNomtek.Config;
+using OmNomNomtek.Domain;
 using OmNomNomtek.Utils;
 using UnityEngine;
 
@@ -14,14 +15,12 @@ namespace OmNomNomtek.UI
     [SerializeField]
     private GameObject _listItemPrefab;
 
+    [SerializeField]
+    private GameObject _thingiesParent;
+
     private void Update()
     {
       // do nothing
-    }
-
-    public void OnListItemClicked(GameObject p)
-    {
-      Debug.Log($"Item clicked! p = {p}");
     }
 
     public void BindThingyList(List<ThingyListConfig.ThingyItemConfig> items)
@@ -42,9 +41,23 @@ namespace OmNomNomtek.UI
 
         GameObject listItem = Instantiate(_listItemPrefab, scrollViewContent.transform);
 
-        listItem.GetComponentSafe<ThingyListItem>()
-          .Bind(itemConfig);
+        var thingyListItem = listItem.GetComponentSafe<ThingyListItem>();
+
+        thingyListItem.Bind(itemConfig);
+
+        thingyListItem.Clicked += OnListItemClicked;
       }
+    }
+
+    private void OnListItemClicked(ThingyListItem thingyListItem)
+    {
+      GameObject thingyGameObject =
+        Instantiate(thingyListItem.Prefab, _thingiesParent.transform);
+
+      InteractableThingy interactableThingy =
+        thingyGameObject.GetComponentSafe<InteractableThingy>();
+
+      interactableThingy.StartDragging();
     }
   }
 }
