@@ -58,7 +58,7 @@ namespace OmNomNomtek.Domain
 
     private void OnCollisionEnter(Collision collision)
     {
-      if (_thingyToSeek == null)
+      if (_thingyToSeek == null || _thingyInteractionsManager.IsBeingDragged(this.gameObject))
       {
         return;
       }

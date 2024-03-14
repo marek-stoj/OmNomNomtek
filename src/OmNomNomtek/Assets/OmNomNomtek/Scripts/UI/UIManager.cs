@@ -22,7 +22,10 @@ namespace OmNomNomtek.UI
     private TMP_InputField _listFilterInputField;
 
     [SerializeField]
-    private GameObject _scrollView;
+    private GameObject _sidePanel;
+
+    [SerializeField]
+    private GameObject _scrollViewContent;
 
     [SerializeField]
     private GameObject _listItemPrefab;
@@ -52,16 +55,14 @@ namespace OmNomNomtek.UI
 
     public void BindThingyList(List<ThingyListConfig.ThingyItemConfig> items)
     {
-      GameObject scrollViewContent = GetScrollViewContent();
-
-      scrollViewContent
+      _scrollViewContent
         .GetChildren()
         .ToList()
         .ForEach(Destroy);
 
       foreach (ThingyListConfig.ThingyItemConfig itemConfig in items)
       {
-        GameObject listItem = Instantiate(_listItemPrefab, scrollViewContent.transform);
+        GameObject listItem = Instantiate(_listItemPrefab, _scrollViewContent.transform);
 
         var thingyListItem = listItem.GetComponentSafe<ThingyListItem>();
 
@@ -73,8 +74,6 @@ namespace OmNomNomtek.UI
 
     private void OnListFilterInputValueChanged(string filter)
     {
-      GameObject scrollViewContent = GetScrollViewContent();
-
       bool filterIsEmpty = string.IsNullOrEmpty(filter);
 
       bool ifMatchesFilter(ThingyListItem tli) =>
@@ -82,7 +81,8 @@ namespace OmNomNomtek.UI
         || filterIsEmpty
         || tli.Title.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0;
 
-      scrollViewContent.GetComponentsInChildren<ThingyListItem>(includeInactive: true)
+      _scrollViewContent
+        .GetComponentsInChildren<ThingyListItem>(includeInactive: true)
         .ForEach(tli => tli.gameObject.SetActive(ifMatchesFilter(tli)));
     }
 
@@ -111,22 +111,13 @@ namespace OmNomNomtek.UI
       ToggleSidePanel(visible: true);
     }
 
-    private GameObject GetScrollViewContent()
-    {
-      var scrollViewContent = _scrollView.FindChildByNameRecursive("Content");
-
-      CommonUtils.EnsureNotNull(scrollViewContent, nameof(scrollViewContent));
-
-      return scrollViewContent;
-    }
-
     private void ToggleSidePanel(bool visible)
     {
-      _scrollView.transform.DOMoveX(
+      _sidePanel.transform.DOMoveX(
         endValue:
           visible
             ? 0
-            : -_scrollView.GetComponentSafe<RectTransform>().rect.width,
+            : -_sidePanel.GetComponentSafe<RectTransform>().rect.width,
         duration: _SidePanelCloseDurationInSeconds
       );
     }
