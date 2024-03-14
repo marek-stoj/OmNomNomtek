@@ -39,8 +39,11 @@ namespace OmNomNomtek.Domain
 
         this.transform.position += direction.normalized * _movementSpeed * Time.fixedDeltaTime;
 
-        // TODO: 2024-03-14 - Immortal - HI - rotation speed; lerp
-        this.transform.rotation = Quaternion.LookRotation(direction);
+        this.transform.rotation = Quaternion.Lerp(
+          this.transform.rotation,
+          Quaternion.LookRotation(direction),
+          _rotationSpeed * Time.fixedDeltaTime
+        );
       }
     }
 
