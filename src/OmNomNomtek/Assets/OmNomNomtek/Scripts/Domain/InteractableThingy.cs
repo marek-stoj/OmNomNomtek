@@ -41,8 +41,6 @@ namespace OmNomNomtek.Domain
             3.0f)
           );
 
-        Debug.Log($"New position: {newPosition}!");
-
         this.transform.position = newPosition;
       }
     }

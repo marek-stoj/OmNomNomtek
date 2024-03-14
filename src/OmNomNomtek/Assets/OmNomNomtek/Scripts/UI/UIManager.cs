@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using OmNomNomtek.Config;
-using OmNomNomtek.Domain;
+using OmNomNomtek.Services;
 using OmNomNomtek.Utils;
 using UnityEngine;
 
@@ -10,13 +10,13 @@ namespace OmNomNomtek.UI
   public class UIManager : MonoBehaviour
   {
     [SerializeField]
+    private ThingyInteractionsManager _thingyInteractionsManager;
+
+    [SerializeField]
     private GameObject _scrollView;
 
     [SerializeField]
     private GameObject _listItemPrefab;
-
-    [SerializeField]
-    private GameObject _thingiesParent;
 
     private void Update()
     {
@@ -51,13 +51,7 @@ namespace OmNomNomtek.UI
 
     private void OnListItemClicked(ThingyListItem thingyListItem)
     {
-      GameObject thingyGameObject =
-        Instantiate(thingyListItem.Prefab, _thingiesParent.transform);
-
-      InteractableThingy interactableThingy =
-        thingyGameObject.GetComponentSafe<InteractableThingy>();
-
-      interactableThingy.StartDragging();
+      _thingyInteractionsManager.SpawnThingy(thingyListItem.Prefab);
     }
   }
 }
