@@ -37,8 +37,6 @@ namespace OmNomNomtek.UI
 
       foreach (ThingyListConfig.ThingyItemConfig itemConfig in items)
       {
-        Debug.Log($"Title: {itemConfig.Title}, Thumbnail: {itemConfig.Thumbnail}, Prefab: {itemConfig.Prefab}");
-
         GameObject listItem = Instantiate(_listItemPrefab, scrollViewContent.transform);
 
         var thingyListItem = listItem.GetComponentSafe<ThingyListItem>();

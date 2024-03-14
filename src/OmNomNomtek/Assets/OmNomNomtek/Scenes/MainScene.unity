@@ -607,6 +607,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _thingiesParent: {fileID: 397521627}
+  _floor: {fileID: 656497941}
+  _defaultPlacementDepth: 5
 --- !u!1 &539669377
 GameObject:
   m_ObjectHideFlags: 0

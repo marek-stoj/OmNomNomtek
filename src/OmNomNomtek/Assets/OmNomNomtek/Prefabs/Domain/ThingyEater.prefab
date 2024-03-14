@@ -49,7 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _movementSpeed: 1
   _rotationSpeed: 1
-  _gameObjectToFollow: {fileID: 0}
+  _thingyToSeek: {fileID: 0}
 --- !u!114 &7214312452942426915
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62,6 +62,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d54a2a0c9f52f57458fe4f0596e6622e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _isTargetable: 0
 --- !u!54 &5037073096245203262
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -90,7 +91,7 @@ GameObject:
   - component: {fileID: 1591315766226869073}
   - component: {fileID: 1591315766226869074}
   - component: {fileID: 1591315766226869075}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using ImmSoft.UnityToolbelt.Utils;
@@ -12,6 +11,12 @@ namespace OmNomNomtek.Services
   {
     [SerializeField]
     private GameObject _thingiesParent;
+
+    [SerializeField]
+    private GameObject _floor;
+
+    [SerializeField]
+    private float _defaultPlacementDepth = 3.0f;
 
     private List<InteractableThingy> _thingies;
 
@@ -46,21 +51,23 @@ namespace OmNomNomtek.Services
 
     public void SpawnThingy(GameObject thingyPrefab)
     {
-      GameObject thingyGameObject =
+      GameObject thingyObject =
         Instantiate(thingyPrefab, _thingiesParent.transform);
 
+      InteractableThingy interactableThingy =
+        thingyObject.GetComponentSafe<InteractableThingy>();
+
+      interactableThingy.Init(this);
+
+      _thingies.Add(interactableThingy);
+
       ThingyEater thingyEater =
-        thingyGameObject.GetComponent<ThingyEater>();
+        thingyObject.GetComponent<ThingyEater>();
 
       if (thingyEater != null)
       {
         thingyEater.Init(this);
       }
-
-      InteractableThingy interactableThingy =
-        thingyGameObject.GetComponentSafe<InteractableThingy>();
-
-      _thingies.Add(interactableThingy);
 
       this.RunAtEndOfFrame(() =>
       {
@@ -82,6 +89,10 @@ namespace OmNomNomtek.Services
 
       return thingyToSeek;
     }
+
+    public GameObject Floor => _floor;
+
+    public float DefaultPlacementDepth => _defaultPlacementDepth;
 
     public bool IsDragging => _interactableThingyBeingDragged != null;
   }
