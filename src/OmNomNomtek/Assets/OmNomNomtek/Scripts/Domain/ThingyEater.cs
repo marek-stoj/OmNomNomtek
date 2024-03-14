@@ -67,6 +67,8 @@ namespace OmNomNomtek.Domain
 
     public void StartRequestingForThingyToSeek()
     {
+      Debug.Log($"ThingyEater.StartRequestingForThingyToSeek!");
+
       this.RunEverySeconds(
         _thingyInteractionsManager.SeekRequestFrequencyInSeconds,
          KeepRequestingThingiesToSeek
