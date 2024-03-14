@@ -29,6 +29,8 @@ namespace OmNomNomtek.UI
       _button.onClick.AddListener(() => Clicked?.Invoke(this));
     }
 
+    public string Title => _title.text ?? "";
+
     public GameObject Prefab => _prefab;
 
     // NOTE: could use event and EventArgs here

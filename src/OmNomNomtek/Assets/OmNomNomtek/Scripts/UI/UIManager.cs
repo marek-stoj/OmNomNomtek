@@ -6,6 +6,7 @@ using OmNomNomtek.Config;
 using OmNomNomtek.Domain;
 using OmNomNomtek.Services;
 using OmNomNomtek.Utils;
+using TMPro;
 using UnityEngine;
 
 namespace OmNomNomtek.UI
@@ -18,6 +19,9 @@ namespace OmNomNomtek.UI
     private ThingyInteractionsManager _thingyInteractionsManager;
 
     [SerializeField]
+    private TMP_InputField _listFilterInputField;
+
+    [SerializeField]
     private GameObject _scrollView;
 
     [SerializeField]
@@ -25,6 +29,8 @@ namespace OmNomNomtek.UI
 
     private void OnEnable()
     {
+      _listFilterInputField.onValueChanged.AddListener(OnListFilterInputValueChanged);
+
       _thingyInteractionsManager.ThingySpawned += OnThingySpawned;
       _thingyInteractionsManager.ThingySpawnCancelled += OnThingySpawnCancelled;
       _thingyInteractionsManager.ThingyPlaced += OnThingyPlaced;
@@ -32,6 +38,8 @@ namespace OmNomNomtek.UI
 
     private void OnDisable()
     {
+      _listFilterInputField.onValueChanged.RemoveListener(OnListFilterInputValueChanged);
+
       _thingyInteractionsManager.ThingySpawned -= OnThingySpawned;
       _thingyInteractionsManager.ThingySpawnCancelled -= OnThingySpawnCancelled;
       _thingyInteractionsManager.ThingyPlaced -= OnThingyPlaced;
@@ -44,10 +52,7 @@ namespace OmNomNomtek.UI
 
     public void BindThingyList(List<ThingyListConfig.ThingyItemConfig> items)
     {
-      GameObject scrollViewContent =
-        _scrollView.FindChildByNameRecursive("Content");
-
-      CommonUtils.EnsureNotNull(scrollViewContent, nameof(scrollViewContent));
+      GameObject scrollViewContent = GetScrollViewContent();
 
       scrollViewContent
         .GetChildren()
@@ -64,6 +69,21 @@ namespace OmNomNomtek.UI
 
         thingyListItem.Clicked += OnListItemClicked;
       }
+    }
+
+    private void OnListFilterInputValueChanged(string filter)
+    {
+      GameObject scrollViewContent = GetScrollViewContent();
+
+      bool filterIsEmpty = string.IsNullOrEmpty(filter);
+
+      bool ifMatchesFilter(ThingyListItem tli) =>
+           false
+        || filterIsEmpty
+        || tli.Title.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0;
+
+      scrollViewContent.GetComponentsInChildren<ThingyListItem>(includeInactive: true)
+        .ForEach(tli => tli.gameObject.SetActive(ifMatchesFilter(tli)));
     }
 
     private void OnListItemClicked(ThingyListItem thingyListItem)
@@ -89,6 +109,15 @@ namespace OmNomNomtek.UI
     private void OnThingyPlaced(InteractableThingy thingy)
     {
       ToggleSidePanel(visible: true);
+    }
+
+    private GameObject GetScrollViewContent()
+    {
+      var scrollViewContent = _scrollView.FindChildByNameRecursive("Content");
+
+      CommonUtils.EnsureNotNull(scrollViewContent, nameof(scrollViewContent));
+
+      return scrollViewContent;
     }
 
     private void ToggleSidePanel(bool visible)
