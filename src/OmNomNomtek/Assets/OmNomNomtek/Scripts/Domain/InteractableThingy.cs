@@ -6,8 +6,6 @@ namespace OmNomNomtek.Domain
 {
   public class InteractableThingy : MonoBehaviour
   {
-    private const float _PlacementAboveFloorOffsetMultiplier = 1.5f;
-
     [SerializeField]
     private bool _isTargetable;
 
@@ -75,6 +73,7 @@ namespace OmNomNomtek.Domain
 
       if (!newPosition.HasValue)
       {
+        // TODO: 2024-03-14 - Immortal - HI - we could project thingy's position to the floor
         newPosition =
           Camera.main.ScreenToWorldPoint(
             new Vector3(
@@ -87,8 +86,9 @@ namespace OmNomNomtek.Domain
 
       if (newPosition.HasValue)
       {
+        // TODO: 2024-03-14 - Immortal - HI - tell, don't ask
         newPosition +=
-            _thingyInteractionsManager.Floor.transform.up * _PlacementAboveFloorOffsetMultiplier * _collider.bounds.extents.y;
+          _thingyInteractionsManager.Floor.transform.up * _thingyInteractionsManager.PlacementAboveFloorOffsetMultiplier * _collider.bounds.extents.y;
 
         this.transform.position = newPosition.Value;
       }

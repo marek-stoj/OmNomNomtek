@@ -35,13 +35,22 @@ namespace OmNomNomtek.Domain
 
       if (_thingyToSeek != null)
       {
-        Vector3 direction = _thingyToSeek.transform.position - this.transform.position;
+        Vector3 directionTowardsThingy =
+          _thingyToSeek.transform.position - this.transform.position;
 
-        this.transform.position += direction.normalized * _movementSpeed * Time.fixedDeltaTime;
+        Vector3 translationVector =
+          directionTowardsThingy.normalized * _movementSpeed * Time.fixedDeltaTime;
+
+        // here we're constraining the movement to the XZ plane
+        this.transform.position +=
+          new Vector3(
+            translationVector.x,
+            0.0f,
+            translationVector.z);
 
         this.transform.rotation = Quaternion.Lerp(
           this.transform.rotation,
-          Quaternion.LookRotation(direction),
+          Quaternion.LookRotation(directionTowardsThingy),
           _rotationSpeed * Time.fixedDeltaTime
         );
       }
@@ -56,7 +65,7 @@ namespace OmNomNomtek.Domain
 
       if (collision.gameObject == _thingyToSeek.gameObject)
       {
-        // NOTE - could be an event; this is simpler
+        // NOTE: could be an event; this is simpler
         _thingyInteractionsManager.EatThingy(this, _thingyToSeek);
 
         StopSeeking();

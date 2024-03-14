@@ -4,10 +4,12 @@ using System.Linq;
 using ImmSoft.UnityToolbelt.Utils;
 using OmNomNomtek.Domain;
 using OmNomNomtek.Utils;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace OmNomNomtek.Services
 {
+  // TODO: 2024-03-14 - Immortal - HI - keep track of the thingies that fell out of bounds - remove them from the list and stop seeking them
   public class ThingyInteractionsManager : MonoBehaviour
   {
     // NOTE: could use EventArgs
@@ -26,6 +28,9 @@ namespace OmNomNomtek.Services
 
     [SerializeField]
     private float _seekRequestFrequencyInSeconds = 0.5f;
+
+    [SerializeField]
+    private float _placementAboveFloorOffsetMultiplier = 1.0f;
 
     private List<InteractableThingy> _thingies;
 
@@ -114,6 +119,7 @@ namespace OmNomNomtek.Services
       IEnumerable<InteractableThingy> potentialTargets =
         _thingies.Where(
           t => true
+            && !t.IsDestroyed()
             && t.IsTargetable
             && !t.IsBeingDragged
             && t.gameObject != thingyEater.gameObject
@@ -152,6 +158,8 @@ namespace OmNomNomtek.Services
     public float DefaultPlacementDepth => _defaultPlacementDepth;
 
     public float SeekRequestFrequencyInSeconds => _seekRequestFrequencyInSeconds;
+
+    public float PlacementAboveFloorOffsetMultiplier => _placementAboveFloorOffsetMultiplier;
 
     public bool IsDragging => _interactableThingyBeingDragged != null;
   }
