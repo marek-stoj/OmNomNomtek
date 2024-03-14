@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace OmNomNomtek
 {
-  public class EaterPocManager : MonoBehaviour
+  public class ThingyEaterTester : MonoBehaviour
   {
     [SerializeField]
     private ThingyEater _thingyEater;
