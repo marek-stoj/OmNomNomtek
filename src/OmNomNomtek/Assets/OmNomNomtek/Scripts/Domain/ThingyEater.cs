@@ -22,10 +22,12 @@ namespace OmNomNomtek.Domain
     private ThingiesContainer _thingiesContainer;
 
     private Rigidbody _rigidBody;
+    private AudioSource _audioSource;
 
     private void Awake()
     {
       _rigidBody = this.GetComponentSafe<Rigidbody>();
+      _audioSource = this.GetComponentSafe<AudioSource>();
     }
 
     private void Start()
@@ -153,6 +155,11 @@ namespace OmNomNomtek.Domain
         if (_thingiesContainer.EatThingy(this, _thingyToSeek))
         {
           StopSeeking();
+
+          if (_audioSource.clip != null)
+          {
+            _audioSource.PlayOneShot(_audioSource.clip);
+          }
         }
       }
     }
