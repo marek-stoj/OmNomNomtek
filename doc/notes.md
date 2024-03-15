@@ -1,13 +1,10 @@
 # TODO
 
-- Unit Tests
-
 - manual testing
 
 - edit the notes for reviewers
 
 - Go Far and Beyond
-  - move along the eater's current direction
   - UI look & feel
   - particles
   - sfx
@@ -22,14 +19,11 @@ carry, carried, carrying
 
 # What could be done better
 
-- search the solution for:
-  - "// NOTE:"
-  - "// TODO:"
+- search the solution for "// TODO:"
 
 - data binding using eg. Peppermint DataBinding asset for items, collections, etc.
-- separate models for item configs and view models for binding
 
-- git - go quick
+- separate models for item configs and view models for binding
 
 - placement
   - projecting to the floor
