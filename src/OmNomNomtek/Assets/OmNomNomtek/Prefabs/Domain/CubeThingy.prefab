@@ -144,6 +144,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isTargetable: 1
+  _destructionVfxPrefab: {fileID: 1389287588518262, guid: f41c04002d868471b8f604ade0e24315,
+    type: 3}
+  _destructionSfxAudioClip: {fileID: 8300000, guid: 5af6899d6e0154eb08fad40a56de5381,
+    type: 3}
 --- !u!54 &2860209184014140729
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -10,6 +10,9 @@ namespace OmNomNomtek.Domain
     [SerializeField]
     private bool _isTargetable;
 
+    [SerializeField]
+    private GameObject _destructionVfxPrefab;
+
     private Collider _collider;
     private Rigidbody _rigidbody;
     private bool _initialIsKinematic;
@@ -32,6 +35,14 @@ namespace OmNomNomtek.Domain
       EnsureIsInitialized();
 
       UpdatePosition();
+    }
+
+    private void OnDestroy()
+    {
+      if (_destructionVfxPrefab != null)
+      {
+        Instantiate(_destructionVfxPrefab, this.transform.position, Quaternion.identity);
+      }
     }
 
     private void Update()

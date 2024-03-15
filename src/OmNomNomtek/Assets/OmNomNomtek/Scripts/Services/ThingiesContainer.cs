@@ -32,6 +32,11 @@ namespace OmNomNomtek.Services
     [SerializeField]
     private float _placementAboveFloorOffsetMultiplier = 1.0f;
 
+    [SerializeField]
+    private AudioClip _thingyEatenSfxAudioClip;
+
+    private AudioSource _audioSource;
+
     // TODO: 2024-03-15 - Immortal - HI - could use a HashSet/Dictionary for better performance
     private List<Thingy> _thingies;
 
@@ -39,6 +44,8 @@ namespace OmNomNomtek.Services
 
     private void Awake()
     {
+      _audioSource = this.GetComponentSafe<AudioSource>();
+
       _thingies = new List<Thingy>();
     }
 
@@ -142,6 +149,11 @@ namespace OmNomNomtek.Services
       _thingies.Remove(thingyToSeek);
 
       Destroy(thingyToSeek.gameObject);
+
+      if (_thingyEatenSfxAudioClip != null)
+      {
+        _audioSource.PlayOneShot(_thingyEatenSfxAudioClip);
+      }
 
       return true;
     }

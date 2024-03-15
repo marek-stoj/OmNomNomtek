@@ -1,10 +1,11 @@
 # TODO
 
 - manual testing
-  - bugs (or features ;))
+  - bugs or features ;)
     - ThingyEater doesn't eat Thingies that stand in its way when it's seeking another Thingy.
     - ThingyEater should stop seeking the Thingy that is too far away (eg. when it's fallen out of bounds).
-    - ThingyEater could change its seek target whenever a new one is placed and it's closer than the one being seeked
+    - ThingyEater could change its seek target whenever a new one is placed and it's closer than the one being seeked.
+    - ThingyEater could destroy itself when it's fallen out of bounds.
 
 - Go Far and Beyond
   - UI look & feel
