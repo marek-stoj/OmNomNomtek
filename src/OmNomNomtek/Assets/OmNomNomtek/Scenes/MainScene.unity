@@ -788,7 +788,7 @@ GameObject:
   - component: {fileID: 514576825}
   - component: {fileID: 514576826}
   m_Layer: 0
-  m_Name: ThingyInteractionsManager
+  m_Name: ThingiesManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3545,7 +3545,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3b13e9302d41184b9ddfb22730194a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _thingyInteractionsManager: {fileID: 514576826}
+  _thingiesManager: {fileID: 514576826}
   _listFilterInputField: {fileID: 327092788}
   _sidePanel: {fileID: 417552786}
   _scrollViewContent: {fileID: 998929986}

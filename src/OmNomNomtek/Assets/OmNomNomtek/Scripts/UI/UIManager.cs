@@ -16,7 +16,7 @@ namespace OmNomNomtek.UI
     private const float _SidePanelCloseDurationInSeconds = 0.2f;
 
     [SerializeField]
-    private ThingyInteractionsManager _thingyInteractionsManager;
+    private ThingiesManager _thingiesManager;
 
     [SerializeField]
     private TMP_InputField _listFilterInputField;
@@ -34,18 +34,18 @@ namespace OmNomNomtek.UI
     {
       _listFilterInputField.onValueChanged.AddListener(OnListFilterInputValueChanged);
 
-      _thingyInteractionsManager.ThingySpawned += OnThingySpawned;
-      _thingyInteractionsManager.ThingySpawnCancelled += OnThingySpawnCancelled;
-      _thingyInteractionsManager.ThingyPlaced += OnThingyPlaced;
+      _thingiesManager.ThingySpawned += OnThingySpawned;
+      _thingiesManager.ThingySpawnCancelled += OnThingySpawnCancelled;
+      _thingiesManager.ThingyPlaced += OnThingyPlaced;
     }
 
     private void OnDisable()
     {
       _listFilterInputField.onValueChanged.RemoveListener(OnListFilterInputValueChanged);
 
-      _thingyInteractionsManager.ThingySpawned -= OnThingySpawned;
-      _thingyInteractionsManager.ThingySpawnCancelled -= OnThingySpawnCancelled;
-      _thingyInteractionsManager.ThingyPlaced -= OnThingyPlaced;
+      _thingiesManager.ThingySpawned -= OnThingySpawned;
+      _thingiesManager.ThingySpawnCancelled -= OnThingySpawnCancelled;
+      _thingiesManager.ThingyPlaced -= OnThingyPlaced;
     }
 
     private void Update()
@@ -88,12 +88,12 @@ namespace OmNomNomtek.UI
 
     private void OnListItemClicked(ThingyListItem thingyListItem)
     {
-      if (_thingyInteractionsManager.IsDragging)
+      if (_thingiesManager.IsDragging)
       {
         return;
       }
 
-      _thingyInteractionsManager.SpawnThingy(thingyListItem.Prefab);
+      _thingiesManager.SpawnThingy(thingyListItem.Prefab);
     }
 
     private void OnThingySpawned(InteractableThingy thingy)

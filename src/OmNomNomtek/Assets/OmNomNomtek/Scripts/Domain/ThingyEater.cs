@@ -16,11 +16,11 @@ namespace OmNomNomtek.Domain
     [SerializeField]
     private InteractableThingy _thingyToSeek;
 
-    private ThingyInteractionsManager _thingyInteractionsManager;
+    private ThingiesManager _thingiesManager;
 
     private void FixedUpdate()
     {
-      if (_thingyInteractionsManager.IsBeingDragged(this.gameObject))
+      if (_thingiesManager.IsBeingDragged(this.gameObject))
       {
         return;
       }
@@ -58,7 +58,7 @@ namespace OmNomNomtek.Domain
 
     private void OnCollisionEnter(Collision collision)
     {
-      if (_thingyToSeek == null || _thingyInteractionsManager.IsBeingDragged(this.gameObject))
+      if (_thingyToSeek == null || _thingiesManager.IsBeingDragged(this.gameObject))
       {
         return;
       }
@@ -66,15 +66,15 @@ namespace OmNomNomtek.Domain
       if (collision.gameObject == _thingyToSeek.gameObject)
       {
         // NOTE: could be an event; this is simpler
-        _thingyInteractionsManager.EatThingy(this, _thingyToSeek);
+        _thingiesManager.EatThingy(this, _thingyToSeek);
 
         StopSeeking();
       }
     }
 
-    public void Init(ThingyInteractionsManager thingyInteractionsManager)
+    public void Init(ThingiesManager thingiesManager)
     {
-      _thingyInteractionsManager = thingyInteractionsManager;
+      _thingiesManager = thingiesManager;
     }
 
     public void StartRequestingForThingyToSeek()
@@ -82,7 +82,7 @@ namespace OmNomNomtek.Domain
       Debug.Log($"ThingyEater.StartRequestingForThingyToSeek!");
 
       this.RunEverySeconds(
-        _thingyInteractionsManager.SeekRequestFrequencyInSeconds,
+        _thingiesManager.SeekRequestFrequencyInSeconds,
          KeepRequestingThingiesToSeek
       );
     }
@@ -108,13 +108,13 @@ namespace OmNomNomtek.Domain
         return;
       }
 
-      if (_thingyInteractionsManager.IsBeingDragged(this.gameObject))
+      if (_thingiesManager.IsBeingDragged(this.gameObject))
       {
         return;
       }
 
       InteractableThingy targetToSeek =
-        _thingyInteractionsManager.RequestThingyToSeek(this);
+        _thingiesManager.RequestThingyToSeek(this);
 
       if (targetToSeek != null)
       {
