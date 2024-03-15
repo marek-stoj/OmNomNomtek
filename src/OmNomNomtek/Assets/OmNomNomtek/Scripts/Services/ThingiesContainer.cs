@@ -78,10 +78,10 @@ namespace OmNomNomtek.Services
         thingyEater.Init(this);
       }
 
+      thingy.StartCarrying();
+
       this.RunAtEndOfFrame(() =>
       {
-        thingy.StartCarrying();
-
         _thingyBeingCarried = thingy;
 
         if (thingyEater != null)
