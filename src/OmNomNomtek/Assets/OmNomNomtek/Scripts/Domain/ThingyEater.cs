@@ -1,6 +1,7 @@
 using System;
 using ImmSoft.UnityToolbelt.Utils;
 using OmNomNomtek.Services;
+using OmNomNomtek.Utils;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -20,6 +21,13 @@ namespace OmNomNomtek.Domain
 
     private bool _isInitialized;
     private ThingiesContainer _thingiesContainer;
+
+    private Rigidbody _rigidBody;
+
+    private void Awake()
+    {
+      _rigidBody = this.GetComponentSafe<Rigidbody>();
+    }
 
     private void Start()
     {
@@ -51,22 +59,43 @@ namespace OmNomNomtek.Domain
         Vector3 directionTowardsThingy =
           _thingyToSeek.transform.position - this.transform.position;
 
-        // lerp the rotation towards the thingy using the configured rotation speed
-        this.transform.rotation = Quaternion.Lerp(
-          this.transform.rotation,
-          Quaternion.LookRotation(directionTowardsThingy),
-          _rotationSpeed * Time.fixedDeltaTime
-        );
-
         // move along our forward direction; movement constrained to the XZ plane
         Vector3 translationVector =
           this.transform.forward * _movementSpeed * Time.fixedDeltaTime;
 
-        this.transform.position +=
-          new Vector3(
-            translationVector.x,
-            0.0f,
-            translationVector.z);
+        Vector3 newPosition =
+          this.transform.position + translationVector;
+
+        // lerp the rotation towards the thingy using the configured rotation speed
+        Quaternion newRotation =
+          Quaternion.Lerp(
+            this.transform.rotation,
+            Quaternion.LookRotation(directionTowardsThingy),
+            _rotationSpeed * Time.fixedDeltaTime
+          );
+
+        /*
+         * Here we implement two alternatives for the movement and rotation.
+         * One is direct, the other one is based on RigidBody (if it's not kinematic).
+         */
+
+        if (_rigidBody.isKinematic)
+        {
+          // constrain movement to the XZ plane in this case
+          newPosition =
+            new Vector3(
+              newPosition.x,
+              this.transform.position.y,
+              newPosition.z);
+
+          this.transform.position = newPosition;
+          this.transform.rotation = newRotation;
+        }
+        else
+        {
+          _rigidBody.MovePosition(newPosition);
+          _rigidBody.MoveRotation(newRotation);
+        }
       }
     }
 
