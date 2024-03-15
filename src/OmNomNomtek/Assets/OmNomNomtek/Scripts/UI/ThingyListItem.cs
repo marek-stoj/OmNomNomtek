@@ -1,3 +1,4 @@
+
 using System;
 using OmNomNomtek.Config;
 using TMPro;
@@ -8,6 +9,9 @@ namespace OmNomNomtek.UI
 {
   public class ThingyListItem : MonoBehaviour
   {
+    // TODO: 2024-03-15 - Immortal - HI - should use EventHandler<EventArgs> here
+    public event Action<ThingyListItem> Clicked;
+
     [SerializeField]
     private TextMeshProUGUI _title;
 
@@ -32,8 +36,5 @@ namespace OmNomNomtek.UI
     public string Title => _title.text ?? "";
 
     public GameObject Prefab => _prefab;
-
-    // NOTE: could use event and EventArgs here
-    public event Action<ThingyListItem> Clicked;
   }
 }

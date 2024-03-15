@@ -3,13 +3,16 @@ using UnityEngine;
 
 namespace OmNomNomtek.Domain
 {
+  /// <remarks>
+  /// For testing purposes.
+  /// </remarks>
   public class ThingyEaterTester : MonoBehaviour
   {
     [SerializeField]
     private ThingyEater _thingyEater;
 
     [SerializeField]
-    private InteractableThingy _thingy;
+    private Thingy _thingy;
 
     private void Start()
     {

@@ -1,3 +1,4 @@
+using System;
 using ImmSoft.UnityToolbelt.Utils;
 using OmNomNomtek.Services;
 using Unity.VisualScripting;
@@ -14,13 +15,24 @@ namespace OmNomNomtek.Domain
     private float _rotationSpeed = 1.0f;
 
     [SerializeField]
-    private InteractableThingy _thingyToSeek;
+    private Thingy _thingyToSeek;
 
-    private ThingyInteractionsManager _thingyInteractionsManager;
+    private bool _isInitialized;
+    private ThingiesManager _thingiesManager;
+
+    private void Start()
+    {
+      EnsureIsInitialized();
+    }
 
     private void FixedUpdate()
     {
-      if (_thingyInteractionsManager.IsBeingDragged(this.gameObject))
+      if (!_isInitialized)
+      {
+        return;
+      }
+
+      if (_thingiesManager.IsBeingCarried(this.gameObject))
       {
         return;
       }
@@ -48,6 +60,7 @@ namespace OmNomNomtek.Domain
             0.0f,
             translationVector.z);
 
+        // lerp the rotation towards the thingy using the configured rotation speed
         this.transform.rotation = Quaternion.Lerp(
           this.transform.rotation,
           Quaternion.LookRotation(directionTowardsThingy),
@@ -56,51 +69,68 @@ namespace OmNomNomtek.Domain
       }
     }
 
-    private void OnCollisionEnter(Collision collision)
+    public void Init(ThingiesManager thingiesManager)
     {
-      if (_thingyToSeek == null || _thingyInteractionsManager.IsBeingDragged(this.gameObject))
-      {
-        return;
-      }
+      _thingiesManager = thingiesManager;
 
-      if (collision.gameObject == _thingyToSeek.gameObject)
-      {
-        // NOTE: could be an event; this is simpler
-        _thingyInteractionsManager.EatThingy(this, _thingyToSeek);
-
-        StopSeeking();
-      }
-    }
-
-    public void Init(ThingyInteractionsManager thingyInteractionsManager)
-    {
-      _thingyInteractionsManager = thingyInteractionsManager;
+      _isInitialized = true;
     }
 
     public void StartRequestingForThingyToSeek()
     {
-      Debug.Log($"ThingyEater.StartRequestingForThingyToSeek!");
+      EnsureIsInitialized();
 
       this.RunEverySeconds(
-        _thingyInteractionsManager.SeekRequestFrequencyInSeconds,
+        _thingiesManager.SeekRequestFrequencyInSeconds,
          KeepRequestingThingiesToSeek
       );
     }
 
-    public void StartSeeking(InteractableThingy thingyToSeek)
+    public void StartSeeking(Thingy thingyToSeek)
     {
-      Debug.Log($"ThingyEater.StartSeeking: {thingyToSeek.gameObject.name}!");
+      EnsureIsInitialized();
 
       _thingyToSeek = thingyToSeek;
     }
 
     public void StopSeeking()
     {
-      Debug.Log($"ThingyEater.StopSeeking!");
+      EnsureIsInitialized();
 
       _thingyToSeek = null;
     }
 
+    private void EnsureIsInitialized()
+    {
+      if (!_isInitialized)
+      {
+        string errorMessage = $"ThingyEater '{this.name}' is not initialized. Please call {nameof(Init)} first.";
+
+        throw new InvalidOperationException(errorMessage);
+      }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+      // check if we're seeking any thingy and if we're not being carried
+      if (_thingyToSeek == null || _thingiesManager.IsBeingCarried(this.gameObject))
+      {
+        return;
+      }
+
+      if (collision.gameObject == _thingyToSeek.gameObject)
+      {
+        // TODO: 2024-03-15 - Immortal - HI - should be an event; this is simpler for now
+        if (_thingiesManager.EatThingy(this, _thingyToSeek))
+        {
+          StopSeeking();
+        }
+      }
+    }
+
+    /// <summary>
+    /// This method is called every few seconds to keep requesting for a thingy to seek from the Thingies Manager.
+    /// </summary>
     private void KeepRequestingThingiesToSeek()
     {
       if (_thingyToSeek != null)
@@ -108,13 +138,13 @@ namespace OmNomNomtek.Domain
         return;
       }
 
-      if (_thingyInteractionsManager.IsBeingDragged(this.gameObject))
+      if (_thingiesManager.IsBeingCarried(this.gameObject))
       {
         return;
       }
 
-      InteractableThingy targetToSeek =
-        _thingyInteractionsManager.RequestThingyToSeek(this);
+      Thingy targetToSeek =
+        _thingiesManager.RequestThingyToSeek(this);
 
       if (targetToSeek != null)
       {

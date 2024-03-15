@@ -16,7 +16,7 @@ namespace OmNomNomtek.UI
     private const float _SidePanelCloseDurationInSeconds = 0.2f;
 
     [SerializeField]
-    private ThingyInteractionsManager _thingyInteractionsManager;
+    private ThingiesManager _thingiesManager;
 
     [SerializeField]
     private TMP_InputField _listFilterInputField;
@@ -30,22 +30,22 @@ namespace OmNomNomtek.UI
     [SerializeField]
     private GameObject _listItemPrefab;
 
-    private void OnEnable()
+    private void Start()
     {
       _listFilterInputField.onValueChanged.AddListener(OnListFilterInputValueChanged);
 
-      _thingyInteractionsManager.ThingySpawned += OnThingySpawned;
-      _thingyInteractionsManager.ThingySpawnCancelled += OnThingySpawnCancelled;
-      _thingyInteractionsManager.ThingyPlaced += OnThingyPlaced;
+      _thingiesManager.ThingySpawned += OnThingySpawned;
+      _thingiesManager.ThingySpawnCancelled += OnThingySpawnCancelled;
+      _thingiesManager.ThingyPlaced += OnThingyPlaced;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
       _listFilterInputField.onValueChanged.RemoveListener(OnListFilterInputValueChanged);
 
-      _thingyInteractionsManager.ThingySpawned -= OnThingySpawned;
-      _thingyInteractionsManager.ThingySpawnCancelled -= OnThingySpawnCancelled;
-      _thingyInteractionsManager.ThingyPlaced -= OnThingyPlaced;
+      _thingiesManager.ThingySpawned -= OnThingySpawned;
+      _thingiesManager.ThingySpawnCancelled -= OnThingySpawnCancelled;
+      _thingiesManager.ThingyPlaced -= OnThingyPlaced;
     }
 
     private void Update()
@@ -55,16 +55,19 @@ namespace OmNomNomtek.UI
 
     public void BindThingyList(List<ThingyListConfig.ThingyItemConfig> items)
     {
+      // remove all existing list items
       _scrollViewContent
         .GetChildren()
         .ToList()
         .ForEach(Destroy);
 
+      // create and bind new list items
       foreach (ThingyListConfig.ThingyItemConfig itemConfig in items)
       {
         GameObject listItem = Instantiate(_listItemPrefab, _scrollViewContent.transform);
 
-        var thingyListItem = listItem.GetComponentSafe<ThingyListItem>();
+        ThingyListItem thingyListItem =
+          listItem.GetComponentSafe<ThingyListItem>();
 
         thingyListItem.Bind(itemConfig);
 
@@ -81,6 +84,7 @@ namespace OmNomNomtek.UI
         || filterIsEmpty
         || tli.Title.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0;
 
+      // activate/deactivate list items based on the filter
       _scrollViewContent
         .GetComponentsInChildren<ThingyListItem>(includeInactive: true)
         .ForEach(tli => tli.gameObject.SetActive(ifMatchesFilter(tli)));
@@ -88,34 +92,35 @@ namespace OmNomNomtek.UI
 
     private void OnListItemClicked(ThingyListItem thingyListItem)
     {
-      if (_thingyInteractionsManager.IsDragging)
+      if (_thingiesManager.IsCarrying)
       {
         return;
       }
 
-      _thingyInteractionsManager.SpawnThingy(thingyListItem.Prefab);
+      _thingiesManager.SpawnThingy(thingyListItem.Prefab);
     }
 
-    private void OnThingySpawned(InteractableThingy thingy)
+    private void OnThingySpawned(Thingy thingy)
     {
-      ToggleSidePanel(visible: false);
+      ToggleSidePanel(shouldBeVisible: false);
     }
 
     private void OnThingySpawnCancelled()
     {
-      ToggleSidePanel(visible: true);
+      ToggleSidePanel(shouldBeVisible: true);
     }
 
-    private void OnThingyPlaced(InteractableThingy thingy)
+    private void OnThingyPlaced(Thingy thingy)
     {
-      ToggleSidePanel(visible: true);
+      ToggleSidePanel(shouldBeVisible: true);
     }
 
-    private void ToggleSidePanel(bool visible)
+    private void ToggleSidePanel(bool shouldBeVisible)
     {
+      // slide the panel left or right based on whether it should be visible
       _sidePanel.transform.DOMoveX(
         endValue:
-          visible
+          shouldBeVisible
             ? 0
             : -_sidePanel.GetComponentSafe<RectTransform>().rect.width,
         duration: _SidePanelCloseDurationInSeconds

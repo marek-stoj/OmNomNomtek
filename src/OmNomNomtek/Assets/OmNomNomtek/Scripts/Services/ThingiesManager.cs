@@ -10,12 +10,12 @@ using UnityEngine;
 namespace OmNomNomtek.Services
 {
   // TODO: 2024-03-14 - Immortal - HI - keep track of the thingies that fell out of bounds - remove them from the list and stop seeking them
-  public class ThingyInteractionsManager : MonoBehaviour
+  public class ThingiesManager : MonoBehaviour
   {
-    // NOTE: could use EventArgs
-    public event Action<InteractableThingy> ThingySpawned;
+    // TODO: 2024-03-15 - Immortal - HI - should use EventHandler<EventArgs> here
+    public event Action<Thingy> ThingySpawned;
     public event Action ThingySpawnCancelled;
-    public event Action<InteractableThingy> ThingyPlaced;
+    public event Action<Thingy> ThingyPlaced;
 
     [SerializeField]
     private GameObject _thingiesParent;
@@ -32,48 +32,29 @@ namespace OmNomNomtek.Services
     [SerializeField]
     private float _placementAboveFloorOffsetMultiplier = 1.0f;
 
-    private List<InteractableThingy> _thingies;
+    // TODO: 2024-03-15 - Immortal - HI - could use a HashSet/Dictionary for better performance
+    private List<Thingy> _thingies;
 
-    private InteractableThingy _interactableThingyBeingDragged;
+    private Thingy _thingyBeingCarried;
 
     private void Awake()
     {
-      _thingies = new List<InteractableThingy>();
+      _thingies = new List<Thingy>();
     }
 
     private void Update()
     {
-      if (_interactableThingyBeingDragged != null)
+      if (_thingyBeingCarried != null)
       {
         if (Input.GetKeyUp(KeyCode.Escape))
         {
-          _interactableThingyBeingDragged.StopDragging();
-          _thingies.Remove(_interactableThingyBeingDragged);
-
-          Destroy(_interactableThingyBeingDragged.gameObject);
-
-          _interactableThingyBeingDragged = null;
-
-          ThingySpawnCancelled?.Invoke();
+          CancelThingySpawn();
         }
         else if (Input.GetMouseButtonUp(0))
         {
-          InteractableThingy currentThingy = _interactableThingyBeingDragged;
-
-          currentThingy.StopDragging();
-
-          _interactableThingyBeingDragged = null;
-
-          ThingyPlaced?.Invoke(currentThingy);
+          PlaceTheThingy();
         }
       }
-    }
-
-    public bool IsBeingDragged(GameObject thingy)
-    {
-      return true
-        && _interactableThingyBeingDragged != null
-        && _interactableThingyBeingDragged.gameObject == thingy;
     }
 
     public void SpawnThingy(GameObject thingyPrefab)
@@ -81,13 +62,14 @@ namespace OmNomNomtek.Services
       GameObject thingyObject =
         Instantiate(thingyPrefab, _thingiesParent.transform);
 
-      InteractableThingy interactableThingy =
-        thingyObject.GetComponentSafe<InteractableThingy>();
+      Thingy thingy =
+        thingyObject.GetComponentSafe<Thingy>();
 
-      interactableThingy.Init(this);
+      thingy.Init(this);
 
-      _thingies.Add(interactableThingy);
+      _thingies.Add(thingy);
 
+      // we could also be an Eater, so let's check if we are
       ThingyEater thingyEater =
         thingyObject.GetComponent<ThingyEater>();
 
@@ -98,34 +80,43 @@ namespace OmNomNomtek.Services
 
       this.RunAtEndOfFrame(() =>
       {
-        interactableThingy.StartDragging();
+        thingy.StartCarrying();
 
-        _interactableThingyBeingDragged = interactableThingy;
+        _thingyBeingCarried = thingy;
 
         if (thingyEater != null)
         {
           thingyEater.StartRequestingForThingyToSeek();
         }
 
-        ThingySpawned?.Invoke(interactableThingy);
+        ThingySpawned?.Invoke(thingy);
       });
+    }
+
+    public bool IsBeingCarried(GameObject thingy)
+    {
+      return true
+        && _thingyBeingCarried != null
+        && _thingyBeingCarried.gameObject == thingy;
     }
 
     /// <remarks>
     /// Don't call in an Update(). It's not efficient. Every once in a while is fine.
     /// </remarks>
-    public InteractableThingy RequestThingyToSeek(ThingyEater thingyEater)
+    public Thingy RequestThingyToSeek(ThingyEater thingyEater)
     {
-      IEnumerable<InteractableThingy> potentialTargets =
+      // filter out the thingies that are destroyed, not targetable, being carried or the thingyEater itself
+      IEnumerable<Thingy> potentialTargets =
         _thingies.Where(
           t => true
             && !t.IsDestroyed()
             && t.IsTargetable
-            && !t.IsBeingDragged
+            && !t.IsBeingCarried
             && t.gameObject != thingyEater.gameObject
         );
 
-      InteractableThingy thingyToSeek =
+      // sort and choose the potential targets by distance to the thingyEater
+      Thingy thingyToSeek =
         potentialTargets.OrderBy(
           t => Vector3.Distance(thingyEater.transform.position, t.transform.position)
         ).FirstOrDefault();
@@ -133,24 +124,49 @@ namespace OmNomNomtek.Services
       return thingyToSeek;
     }
 
-    public void EatThingy(ThingyEater thingyEater, InteractableThingy thingyToSeek)
+    public bool EatThingy(ThingyEater thingyEater, Thingy thingyToSeek)
     {
       // NOTE: just for sanity
-      if (_interactableThingyBeingDragged == thingyToSeek)
+      if (_thingyBeingCarried == thingyToSeek)
       {
-        _interactableThingyBeingDragged = null;
+        _thingyBeingCarried = null;
       }
 
       // NOTE: this too
-      if (thingyToSeek.IsBeingDragged)
+      if (thingyToSeek.IsBeingCarried)
       {
-        thingyToSeek.StopDragging();
+        thingyToSeek.StopCarrying();
       }
 
-      // NOTE: could use a HashSet/Dictionary for better performance
+      // TODO: 2024-03-15 - Immortal - HI - could use a HashSet/Dictionary for better performance
       _thingies.Remove(thingyToSeek);
 
       Destroy(thingyToSeek.gameObject);
+
+      return true;
+    }
+
+    private void PlaceTheThingy()
+    {
+      Thingy currentThingy = _thingyBeingCarried;
+
+      currentThingy.StopCarrying();
+
+      _thingyBeingCarried = null;
+
+      ThingyPlaced?.Invoke(currentThingy);
+    }
+
+    private void CancelThingySpawn()
+    {
+      _thingyBeingCarried.StopCarrying();
+      _thingies.Remove(_thingyBeingCarried);
+
+      Destroy(_thingyBeingCarried.gameObject);
+
+      _thingyBeingCarried = null;
+
+      ThingySpawnCancelled?.Invoke();
     }
 
     public GameObject Floor => _floor;
@@ -161,6 +177,6 @@ namespace OmNomNomtek.Services
 
     public float PlacementAboveFloorOffsetMultiplier => _placementAboveFloorOffsetMultiplier;
 
-    public bool IsDragging => _interactableThingyBeingDragged != null;
+    public bool IsCarrying => _thingyBeingCarried != null;
   }
 }

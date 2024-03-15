@@ -1,10 +1,11 @@
+using System;
 using OmNomNomtek.Services;
 using OmNomNomtek.Utils;
 using UnityEngine;
 
 namespace OmNomNomtek.Domain
 {
-  public class InteractableThingy : MonoBehaviour
+  public class Thingy : MonoBehaviour
   {
     [SerializeField]
     private bool _isTargetable;
@@ -13,9 +14,10 @@ namespace OmNomNomtek.Domain
     private Rigidbody _rigidbody;
     private bool _initialIsKinematic;
 
-    private bool _isBeingDragged;
+    private bool _isBeingCarried;
 
-    private ThingyInteractionsManager _thingyInteractionsManager;
+    private bool _isInitialized;
+    private ThingiesManager _thingiesManager;
 
     private void Awake()
     {
@@ -27,50 +29,77 @@ namespace OmNomNomtek.Domain
 
     private void Start()
     {
+      EnsureIsInitialized();
+
       UpdatePosition();
     }
 
     private void Update()
     {
-      if (_isBeingDragged)
+      if (!_isInitialized)
+      {
+        return;
+      }
+
+      if (_isBeingCarried)
       {
         UpdatePosition();
       }
     }
 
-    public void Init(ThingyInteractionsManager thingyInteractionsManager)
+    public void Init(ThingiesManager thingiesManager)
     {
-      _thingyInteractionsManager = thingyInteractionsManager;
+      _thingiesManager = thingiesManager;
+
+      _isInitialized = true;
     }
 
-    public void StartDragging()
+    public void StartCarrying()
     {
+      EnsureIsInitialized();
+
       _rigidbody.isKinematic = true;
-      _isBeingDragged = true;
+      _isBeingCarried = true;
 
       UpdatePosition();
     }
 
-    public void StopDragging()
+    public void StopCarrying()
     {
+      EnsureIsInitialized();
+
       _rigidbody.isKinematic = _initialIsKinematic;
-      _isBeingDragged = false;
+      _isBeingCarried = false;
+    }
+
+    private void EnsureIsInitialized()
+    {
+      if (!_isInitialized)
+      {
+        string errorMessage = $"Thingy '{this.name}' is not initialized. Please call {nameof(Init)} first.";
+
+        throw new InvalidOperationException(errorMessage);
+      }
     }
 
     private void UpdatePosition()
     {
+      EnsureIsInitialized();
+
       Vector3? newPosition = null;
 
+      // first let's see if we are pointing at the floor
       Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 
       if (Physics.Raycast(mouseRay, out RaycastHit rayHit))
       {
-        if (rayHit.collider.gameObject == _thingyInteractionsManager.Floor)
+        if (rayHit.collider.gameObject == _thingiesManager.Floor)
         {
           newPosition = rayHit.point;
         }
       }
 
+      // if not pointing at the floor, we'll just use the mouse position projected with a constant depth
       if (!newPosition.HasValue)
       {
         // TODO: 2024-03-14 - Immortal - HI - we could project thingy's position to the floor
@@ -79,7 +108,7 @@ namespace OmNomNomtek.Domain
             new Vector3(
               Input.mousePosition.x,
               Input.mousePosition.y,
-              _thingyInteractionsManager.DefaultPlacementDepth
+              _thingiesManager.DefaultPlacementDepth
             )
           );
       }
@@ -88,7 +117,7 @@ namespace OmNomNomtek.Domain
       {
         // TODO: 2024-03-14 - Immortal - HI - tell, don't ask
         newPosition +=
-          _thingyInteractionsManager.Floor.transform.up * _thingyInteractionsManager.PlacementAboveFloorOffsetMultiplier * _collider.bounds.extents.y;
+          _thingiesManager.Floor.transform.up * _thingiesManager.PlacementAboveFloorOffsetMultiplier * _collider.bounds.extents.y;
 
         this.transform.position = newPosition.Value;
       }
@@ -96,6 +125,6 @@ namespace OmNomNomtek.Domain
 
     public bool IsTargetable => _isTargetable;
 
-    public bool IsBeingDragged => _isBeingDragged;
+    public bool IsBeingCarried => _isBeingCarried;
   }
 }
