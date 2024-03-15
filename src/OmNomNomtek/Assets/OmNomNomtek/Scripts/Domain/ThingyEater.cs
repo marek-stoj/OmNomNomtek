@@ -79,8 +79,6 @@ namespace OmNomNomtek.Domain
 
     public void StartRequestingForThingyToSeek()
     {
-      Debug.Log($"ThingyEater.StartRequestingForThingyToSeek!");
-
       this.RunEverySeconds(
         _thingiesManager.SeekRequestFrequencyInSeconds,
          KeepRequestingThingiesToSeek
@@ -89,15 +87,11 @@ namespace OmNomNomtek.Domain
 
     public void StartSeeking(Thingy thingyToSeek)
     {
-      Debug.Log($"ThingyEater.StartSeeking: {thingyToSeek.gameObject.name}!");
-
       _thingyToSeek = thingyToSeek;
     }
 
     public void StopSeeking()
     {
-      Debug.Log($"ThingyEater.StopSeeking!");
-
       _thingyToSeek = null;
     }
 

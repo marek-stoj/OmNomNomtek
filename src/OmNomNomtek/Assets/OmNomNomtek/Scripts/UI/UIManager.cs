@@ -30,7 +30,7 @@ namespace OmNomNomtek.UI
     [SerializeField]
     private GameObject _listItemPrefab;
 
-    private void OnEnable()
+    private void Start()
     {
       _listFilterInputField.onValueChanged.AddListener(OnListFilterInputValueChanged);
 
@@ -39,7 +39,7 @@ namespace OmNomNomtek.UI
       _thingiesManager.ThingyPlaced += OnThingyPlaced;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
       _listFilterInputField.onValueChanged.RemoveListener(OnListFilterInputValueChanged);
 
@@ -64,7 +64,8 @@ namespace OmNomNomtek.UI
       {
         GameObject listItem = Instantiate(_listItemPrefab, _scrollViewContent.transform);
 
-        var thingyListItem = listItem.GetComponentSafe<ThingyListItem>();
+        ThingyListItem thingyListItem =
+          listItem.GetComponentSafe<ThingyListItem>();
 
         thingyListItem.Bind(itemConfig);
 
@@ -98,24 +99,24 @@ namespace OmNomNomtek.UI
 
     private void OnThingySpawned(Thingy thingy)
     {
-      ToggleSidePanel(visible: false);
+      ToggleSidePanel(shouldBeVisible: false);
     }
 
     private void OnThingySpawnCancelled()
     {
-      ToggleSidePanel(visible: true);
+      ToggleSidePanel(shouldBeVisible: true);
     }
 
     private void OnThingyPlaced(Thingy thingy)
     {
-      ToggleSidePanel(visible: true);
+      ToggleSidePanel(shouldBeVisible: true);
     }
 
-    private void ToggleSidePanel(bool visible)
+    private void ToggleSidePanel(bool shouldBeVisible)
     {
       _sidePanel.transform.DOMoveX(
         endValue:
-          visible
+          shouldBeVisible
             ? 0
             : -_sidePanel.GetComponentSafe<RectTransform>().rect.width,
         duration: _SidePanelCloseDurationInSeconds
