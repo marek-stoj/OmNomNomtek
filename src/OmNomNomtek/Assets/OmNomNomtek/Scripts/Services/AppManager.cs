@@ -9,7 +9,7 @@ namespace OmNomNomtek.Services
   public class AppManager : MonoBehaviour
   {
     [Inject]
-    private UIManager _uiManager;
+    private UIController _uiController;
 
     [Inject]
     private ThingyListConfig _thingyListConfig;
@@ -24,14 +24,12 @@ namespace OmNomNomtek.Services
 
     private void Awake()
     {
-      Debug.Log($"_sampleDependency: {_sampleDependency}");
-
       DOTween.Init();
     }
 
     private void Start()
     {
-      _uiManager.BindThingyList(_thingyListConfig.Items);
+      _uiController.BindThingyList(_thingyListConfig.Items);
     }
 
     private void Update()

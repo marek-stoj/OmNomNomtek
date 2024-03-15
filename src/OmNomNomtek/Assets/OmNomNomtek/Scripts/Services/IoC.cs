@@ -23,7 +23,7 @@ namespace OmNomNomtek.Services
         .AsSingle()
         .NonLazy();
 
-      Container.Bind<UIManager>()
+      Container.Bind<UIController>()
         .FromComponentInHierarchy()
         .AsSingle();
 

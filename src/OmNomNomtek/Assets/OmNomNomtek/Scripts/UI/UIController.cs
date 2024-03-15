@@ -11,12 +11,12 @@ using UnityEngine;
 
 namespace OmNomNomtek.UI
 {
-  public class UIManager : MonoBehaviour
+  public class UIController : MonoBehaviour
   {
     private const float _SidePanelCloseDurationInSeconds = 0.2f;
 
     [SerializeField]
-    private ThingiesManager _thingiesManager;
+    private ThingiesContainer _thingiesContainer;
 
     [SerializeField]
     private TMP_InputField _listFilterInputField;
@@ -34,18 +34,18 @@ namespace OmNomNomtek.UI
     {
       _listFilterInputField.onValueChanged.AddListener(OnListFilterInputValueChanged);
 
-      _thingiesManager.ThingySpawned += OnThingySpawned;
-      _thingiesManager.ThingySpawnCancelled += OnThingySpawnCancelled;
-      _thingiesManager.ThingyPlaced += OnThingyPlaced;
+      _thingiesContainer.ThingySpawned += OnThingySpawned;
+      _thingiesContainer.ThingySpawnCancelled += OnThingySpawnCancelled;
+      _thingiesContainer.ThingyPlaced += OnThingyPlaced;
     }
 
     private void OnDestroy()
     {
       _listFilterInputField.onValueChanged.RemoveListener(OnListFilterInputValueChanged);
 
-      _thingiesManager.ThingySpawned -= OnThingySpawned;
-      _thingiesManager.ThingySpawnCancelled -= OnThingySpawnCancelled;
-      _thingiesManager.ThingyPlaced -= OnThingyPlaced;
+      _thingiesContainer.ThingySpawned -= OnThingySpawned;
+      _thingiesContainer.ThingySpawnCancelled -= OnThingySpawnCancelled;
+      _thingiesContainer.ThingyPlaced -= OnThingyPlaced;
     }
 
     private void Update()
@@ -92,12 +92,12 @@ namespace OmNomNomtek.UI
 
     private void OnListItemClicked(ThingyListItem thingyListItem)
     {
-      if (_thingiesManager.IsCarrying)
+      if (_thingiesContainer.IsCarrying)
       {
         return;
       }
 
-      _thingiesManager.SpawnThingy(thingyListItem.Prefab);
+      _thingiesContainer.SpawnThingy(thingyListItem.Prefab);
     }
 
     private void OnThingySpawned(Thingy thingy)

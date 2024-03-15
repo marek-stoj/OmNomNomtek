@@ -17,7 +17,7 @@ namespace OmNomNomtek.Domain
     private bool _isBeingCarried;
 
     private bool _isInitialized;
-    private ThingiesManager _thingiesManager;
+    private ThingiesContainer _thingiesContainer;
 
     private void Awake()
     {
@@ -47,9 +47,9 @@ namespace OmNomNomtek.Domain
       }
     }
 
-    public void Init(ThingiesManager thingiesManager)
+    public void Init(ThingiesContainer thingiesContainer)
     {
-      _thingiesManager = thingiesManager;
+      _thingiesContainer = thingiesContainer;
 
       _isInitialized = true;
     }
@@ -93,7 +93,7 @@ namespace OmNomNomtek.Domain
 
       if (Physics.Raycast(mouseRay, out RaycastHit rayHit))
       {
-        if (rayHit.collider.gameObject == _thingiesManager.Floor)
+        if (rayHit.collider.gameObject == _thingiesContainer.Floor)
         {
           newPosition = rayHit.point;
         }
@@ -108,7 +108,7 @@ namespace OmNomNomtek.Domain
             new Vector3(
               Input.mousePosition.x,
               Input.mousePosition.y,
-              _thingiesManager.DefaultPlacementDepth
+              _thingiesContainer.DefaultPlacementDepth
             )
           );
       }
@@ -117,7 +117,7 @@ namespace OmNomNomtek.Domain
       {
         // TODO: 2024-03-14 - Immortal - HI - tell, don't ask
         newPosition +=
-          _thingiesManager.Floor.transform.up * _thingiesManager.PlacementAboveFloorOffsetMultiplier * _collider.bounds.extents.y;
+          _thingiesContainer.Floor.transform.up * _thingiesContainer.PlacementAboveFloorOffsetMultiplier * _collider.bounds.extents.y;
 
         this.transform.position = newPosition.Value;
       }

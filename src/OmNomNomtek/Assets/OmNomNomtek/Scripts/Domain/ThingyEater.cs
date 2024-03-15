@@ -18,7 +18,7 @@ namespace OmNomNomtek.Domain
     private Thingy _thingyToSeek;
 
     private bool _isInitialized;
-    private ThingiesManager _thingiesManager;
+    private ThingiesContainer _thingiesContainer;
 
     private void Start()
     {
@@ -32,7 +32,7 @@ namespace OmNomNomtek.Domain
         return;
       }
 
-      if (_thingiesManager.IsBeingCarried(this.gameObject))
+      if (_thingiesContainer.IsBeingCarried(this.gameObject))
       {
         return;
       }
@@ -69,9 +69,9 @@ namespace OmNomNomtek.Domain
       }
     }
 
-    public void Init(ThingiesManager thingiesManager)
+    public void Init(ThingiesContainer thingiesContainer)
     {
-      _thingiesManager = thingiesManager;
+      _thingiesContainer = thingiesContainer;
 
       _isInitialized = true;
     }
@@ -81,7 +81,7 @@ namespace OmNomNomtek.Domain
       EnsureIsInitialized();
 
       this.RunEverySeconds(
-        _thingiesManager.SeekRequestFrequencyInSeconds,
+        _thingiesContainer.SeekRequestFrequencyInSeconds,
          KeepRequestingThingiesToSeek
       );
     }
@@ -113,7 +113,7 @@ namespace OmNomNomtek.Domain
     private void OnCollisionEnter(Collision collision)
     {
       // check if we're seeking any thingy and if we're not being carried
-      if (_thingyToSeek == null || _thingiesManager.IsBeingCarried(this.gameObject))
+      if (_thingyToSeek == null || _thingiesContainer.IsBeingCarried(this.gameObject))
       {
         return;
       }
@@ -121,7 +121,7 @@ namespace OmNomNomtek.Domain
       if (collision.gameObject == _thingyToSeek.gameObject)
       {
         // TODO: 2024-03-15 - Immortal - HI - should be an event; this is simpler for now
-        if (_thingiesManager.EatThingy(this, _thingyToSeek))
+        if (_thingiesContainer.EatThingy(this, _thingyToSeek))
         {
           StopSeeking();
         }
@@ -138,13 +138,13 @@ namespace OmNomNomtek.Domain
         return;
       }
 
-      if (_thingiesManager.IsBeingCarried(this.gameObject))
+      if (_thingiesContainer.IsBeingCarried(this.gameObject))
       {
         return;
       }
 
       Thingy targetToSeek =
-        _thingiesManager.RequestThingyToSeek(this);
+        _thingiesContainer.RequestThingyToSeek(this);
 
       if (targetToSeek != null)
       {

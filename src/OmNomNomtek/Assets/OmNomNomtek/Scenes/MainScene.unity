@@ -2001,7 +2001,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3b13e9302d41184b9ddfb22730194a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _thingiesManager: {fileID: 546257448}
+  _thingiesContainer: {fileID: 546257448}
   _listFilterInputField: {fileID: 327092788}
   _sidePanel: {fileID: 417552786}
   _scrollViewContent: {fileID: 998929986}

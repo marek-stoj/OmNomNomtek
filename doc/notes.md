@@ -18,6 +18,7 @@
 - ?? Each item in the asset should be defined as a title and a content asset.
 
 - Go Far and Beyond
+  - move along the eater's current direction
   - UI look & feel
   - particles
   - sfx

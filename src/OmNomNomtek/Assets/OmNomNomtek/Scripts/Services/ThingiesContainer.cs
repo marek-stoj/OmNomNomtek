@@ -10,7 +10,7 @@ using UnityEngine;
 namespace OmNomNomtek.Services
 {
   // TODO: 2024-03-14 - Immortal - HI - keep track of the thingies that fell out of bounds - remove them from the list and stop seeking them
-  public class ThingiesManager : MonoBehaviour
+  public class ThingiesContainer : MonoBehaviour
   {
     // TODO: 2024-03-15 - Immortal - HI - should use EventHandler<EventArgs> here
     public event Action<Thingy> ThingySpawned;
