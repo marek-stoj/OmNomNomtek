@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace OmNomNomtek.Domain
 {
-  public class InteractableThingy : MonoBehaviour
+  public class Thingy : MonoBehaviour
   {
     [SerializeField]
     private bool _isTargetable;
@@ -13,7 +13,7 @@ namespace OmNomNomtek.Domain
     private Rigidbody _rigidbody;
     private bool _initialIsKinematic;
 
-    private bool _isBeingDragged;
+    private bool _isBeingCarried;
 
     private ThingiesManager _thingiesManager;
 
@@ -32,7 +32,7 @@ namespace OmNomNomtek.Domain
 
     private void Update()
     {
-      if (_isBeingDragged)
+      if (_isBeingCarried)
       {
         UpdatePosition();
       }
@@ -43,18 +43,18 @@ namespace OmNomNomtek.Domain
       _thingiesManager = thingiesManager;
     }
 
-    public void StartDragging()
+    public void StartCarrying()
     {
       _rigidbody.isKinematic = true;
-      _isBeingDragged = true;
+      _isBeingCarried = true;
 
       UpdatePosition();
     }
 
-    public void StopDragging()
+    public void StopCarrying()
     {
       _rigidbody.isKinematic = _initialIsKinematic;
-      _isBeingDragged = false;
+      _isBeingCarried = false;
     }
 
     private void UpdatePosition()
@@ -96,6 +96,6 @@ namespace OmNomNomtek.Domain
 
     public bool IsTargetable => _isTargetable;
 
-    public bool IsBeingDragged => _isBeingDragged;
+    public bool IsBeingCarried => _isBeingCarried;
   }
 }

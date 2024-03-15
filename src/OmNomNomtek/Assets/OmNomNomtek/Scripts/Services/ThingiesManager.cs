@@ -13,9 +13,9 @@ namespace OmNomNomtek.Services
   public class ThingiesManager : MonoBehaviour
   {
     // NOTE: could use EventArgs
-    public event Action<InteractableThingy> ThingySpawned;
+    public event Action<Thingy> ThingySpawned;
     public event Action ThingySpawnCancelled;
-    public event Action<InteractableThingy> ThingyPlaced;
+    public event Action<Thingy> ThingyPlaced;
 
     [SerializeField]
     private GameObject _thingiesParent;
@@ -32,48 +32,48 @@ namespace OmNomNomtek.Services
     [SerializeField]
     private float _placementAboveFloorOffsetMultiplier = 1.0f;
 
-    private List<InteractableThingy> _thingies;
+    private List<Thingy> _thingies;
 
-    private InteractableThingy _interactableThingyBeingDragged;
+    private Thingy _thingyBeingCarried;
 
     private void Awake()
     {
-      _thingies = new List<InteractableThingy>();
+      _thingies = new List<Thingy>();
     }
 
     private void Update()
     {
-      if (_interactableThingyBeingDragged != null)
+      if (_thingyBeingCarried != null)
       {
         if (Input.GetKeyUp(KeyCode.Escape))
         {
-          _interactableThingyBeingDragged.StopDragging();
-          _thingies.Remove(_interactableThingyBeingDragged);
+          _thingyBeingCarried.StopCarrying();
+          _thingies.Remove(_thingyBeingCarried);
 
-          Destroy(_interactableThingyBeingDragged.gameObject);
+          Destroy(_thingyBeingCarried.gameObject);
 
-          _interactableThingyBeingDragged = null;
+          _thingyBeingCarried = null;
 
           ThingySpawnCancelled?.Invoke();
         }
         else if (Input.GetMouseButtonUp(0))
         {
-          InteractableThingy currentThingy = _interactableThingyBeingDragged;
+          Thingy currentThingy = _thingyBeingCarried;
 
-          currentThingy.StopDragging();
+          currentThingy.StopCarrying();
 
-          _interactableThingyBeingDragged = null;
+          _thingyBeingCarried = null;
 
           ThingyPlaced?.Invoke(currentThingy);
         }
       }
     }
 
-    public bool IsBeingDragged(GameObject thingy)
+    public bool IsBeingCarried(GameObject thingy)
     {
       return true
-        && _interactableThingyBeingDragged != null
-        && _interactableThingyBeingDragged.gameObject == thingy;
+        && _thingyBeingCarried != null
+        && _thingyBeingCarried.gameObject == thingy;
     }
 
     public void SpawnThingy(GameObject thingyPrefab)
@@ -81,12 +81,12 @@ namespace OmNomNomtek.Services
       GameObject thingyObject =
         Instantiate(thingyPrefab, _thingiesParent.transform);
 
-      InteractableThingy interactableThingy =
-        thingyObject.GetComponentSafe<InteractableThingy>();
+      Thingy thingy =
+        thingyObject.GetComponentSafe<Thingy>();
 
-      interactableThingy.Init(this);
+      thingy.Init(this);
 
-      _thingies.Add(interactableThingy);
+      _thingies.Add(thingy);
 
       ThingyEater thingyEater =
         thingyObject.GetComponent<ThingyEater>();
@@ -98,34 +98,34 @@ namespace OmNomNomtek.Services
 
       this.RunAtEndOfFrame(() =>
       {
-        interactableThingy.StartDragging();
+        thingy.StartCarrying();
 
-        _interactableThingyBeingDragged = interactableThingy;
+        _thingyBeingCarried = thingy;
 
         if (thingyEater != null)
         {
           thingyEater.StartRequestingForThingyToSeek();
         }
 
-        ThingySpawned?.Invoke(interactableThingy);
+        ThingySpawned?.Invoke(thingy);
       });
     }
 
     /// <remarks>
     /// Don't call in an Update(). It's not efficient. Every once in a while is fine.
     /// </remarks>
-    public InteractableThingy RequestThingyToSeek(ThingyEater thingyEater)
+    public Thingy RequestThingyToSeek(ThingyEater thingyEater)
     {
-      IEnumerable<InteractableThingy> potentialTargets =
+      IEnumerable<Thingy> potentialTargets =
         _thingies.Where(
           t => true
             && !t.IsDestroyed()
             && t.IsTargetable
-            && !t.IsBeingDragged
+            && !t.IsBeingCarried
             && t.gameObject != thingyEater.gameObject
         );
 
-      InteractableThingy thingyToSeek =
+      Thingy thingyToSeek =
         potentialTargets.OrderBy(
           t => Vector3.Distance(thingyEater.transform.position, t.transform.position)
         ).FirstOrDefault();
@@ -133,18 +133,18 @@ namespace OmNomNomtek.Services
       return thingyToSeek;
     }
 
-    public void EatThingy(ThingyEater thingyEater, InteractableThingy thingyToSeek)
+    public void EatThingy(ThingyEater thingyEater, Thingy thingyToSeek)
     {
       // NOTE: just for sanity
-      if (_interactableThingyBeingDragged == thingyToSeek)
+      if (_thingyBeingCarried == thingyToSeek)
       {
-        _interactableThingyBeingDragged = null;
+        _thingyBeingCarried = null;
       }
 
       // NOTE: this too
-      if (thingyToSeek.IsBeingDragged)
+      if (thingyToSeek.IsBeingCarried)
       {
-        thingyToSeek.StopDragging();
+        thingyToSeek.StopCarrying();
       }
 
       // NOTE: could use a HashSet/Dictionary for better performance
@@ -161,6 +161,6 @@ namespace OmNomNomtek.Services
 
     public float PlacementAboveFloorOffsetMultiplier => _placementAboveFloorOffsetMultiplier;
 
-    public bool IsDragging => _interactableThingyBeingDragged != null;
+    public bool IsCarrying => _thingyBeingCarried != null;
   }
 }

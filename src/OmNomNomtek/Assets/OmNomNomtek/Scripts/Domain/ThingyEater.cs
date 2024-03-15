@@ -14,13 +14,13 @@ namespace OmNomNomtek.Domain
     private float _rotationSpeed = 1.0f;
 
     [SerializeField]
-    private InteractableThingy _thingyToSeek;
+    private Thingy _thingyToSeek;
 
     private ThingiesManager _thingiesManager;
 
     private void FixedUpdate()
     {
-      if (_thingiesManager.IsBeingDragged(this.gameObject))
+      if (_thingiesManager.IsBeingCarried(this.gameObject))
       {
         return;
       }
@@ -58,7 +58,7 @@ namespace OmNomNomtek.Domain
 
     private void OnCollisionEnter(Collision collision)
     {
-      if (_thingyToSeek == null || _thingiesManager.IsBeingDragged(this.gameObject))
+      if (_thingyToSeek == null || _thingiesManager.IsBeingCarried(this.gameObject))
       {
         return;
       }
@@ -87,7 +87,7 @@ namespace OmNomNomtek.Domain
       );
     }
 
-    public void StartSeeking(InteractableThingy thingyToSeek)
+    public void StartSeeking(Thingy thingyToSeek)
     {
       Debug.Log($"ThingyEater.StartSeeking: {thingyToSeek.gameObject.name}!");
 
@@ -108,12 +108,12 @@ namespace OmNomNomtek.Domain
         return;
       }
 
-      if (_thingiesManager.IsBeingDragged(this.gameObject))
+      if (_thingiesManager.IsBeingCarried(this.gameObject))
       {
         return;
       }
 
-      InteractableThingy targetToSeek =
+      Thingy targetToSeek =
         _thingiesManager.RequestThingyToSeek(this);
 
       if (targetToSeek != null)

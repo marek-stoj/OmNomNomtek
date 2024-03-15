@@ -88,7 +88,7 @@ namespace OmNomNomtek.UI
 
     private void OnListItemClicked(ThingyListItem thingyListItem)
     {
-      if (_thingiesManager.IsDragging)
+      if (_thingiesManager.IsCarrying)
       {
         return;
       }
@@ -96,7 +96,7 @@ namespace OmNomNomtek.UI
       _thingiesManager.SpawnThingy(thingyListItem.Prefab);
     }
 
-    private void OnThingySpawned(InteractableThingy thingy)
+    private void OnThingySpawned(Thingy thingy)
     {
       ToggleSidePanel(visible: false);
     }
@@ -106,7 +106,7 @@ namespace OmNomNomtek.UI
       ToggleSidePanel(visible: true);
     }
 
-    private void OnThingyPlaced(InteractableThingy thingy)
+    private void OnThingyPlaced(Thingy thingy)
     {
       ToggleSidePanel(visible: true);
     }

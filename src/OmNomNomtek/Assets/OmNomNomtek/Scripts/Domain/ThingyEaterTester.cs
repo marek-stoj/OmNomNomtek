@@ -9,7 +9,7 @@ namespace OmNomNomtek.Domain
     private ThingyEater _thingyEater;
 
     [SerializeField]
-    private InteractableThingy _thingy;
+    private Thingy _thingy;
 
     private void Start()
     {
