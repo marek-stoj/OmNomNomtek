@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 namespace OmNomNomtek.UI
 {
+  // TODO: 2024-03-15 - Immortal - HI - separate models for item configs and view models for binding
   public class ThingyListItem : MonoBehaviour
   {
     // TODO: 2024-03-15 - Immortal - HI - should use EventHandler<EventArgs> here
