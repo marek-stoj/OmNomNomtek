@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace OmNomNomtek.Domain
 {
+  /// <remarks>
+  /// For testing purposes.
+  /// </remarks>
   public class ThingyEaterTester : MonoBehaviour
   {
     [SerializeField]

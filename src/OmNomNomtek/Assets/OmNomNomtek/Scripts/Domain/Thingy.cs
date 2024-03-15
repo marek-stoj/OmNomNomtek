@@ -88,6 +88,7 @@ namespace OmNomNomtek.Domain
 
       Vector3? newPosition = null;
 
+      // first let's see if we are pointing at the floor
       Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 
       if (Physics.Raycast(mouseRay, out RaycastHit rayHit))
@@ -98,6 +99,7 @@ namespace OmNomNomtek.Domain
         }
       }
 
+      // if not pointing at the floor, we'll just use the mouse position projected with a constant depth
       if (!newPosition.HasValue)
       {
         // TODO: 2024-03-14 - Immortal - HI - we could project thingy's position to the floor

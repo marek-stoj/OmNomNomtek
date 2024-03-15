@@ -60,6 +60,7 @@ namespace OmNomNomtek.Domain
             0.0f,
             translationVector.z);
 
+        // lerp the rotation towards the thingy using the configured rotation speed
         this.transform.rotation = Quaternion.Lerp(
           this.transform.rotation,
           Quaternion.LookRotation(directionTowardsThingy),
@@ -71,6 +72,8 @@ namespace OmNomNomtek.Domain
     public void Init(ThingiesManager thingiesManager)
     {
       _thingiesManager = thingiesManager;
+
+      _isInitialized = true;
     }
 
     public void StartRequestingForThingyToSeek()
@@ -109,6 +112,7 @@ namespace OmNomNomtek.Domain
 
     private void OnCollisionEnter(Collision collision)
     {
+      // check if we're seeking any thingy and if we're not being carried
       if (_thingyToSeek == null || _thingiesManager.IsBeingCarried(this.gameObject))
       {
         return;
@@ -116,13 +120,17 @@ namespace OmNomNomtek.Domain
 
       if (collision.gameObject == _thingyToSeek.gameObject)
       {
-        // NOTE: could be an event; this is simpler
-        _thingiesManager.EatThingy(this, _thingyToSeek);
-
-        StopSeeking();
+        // TODO: 2024-03-15 - Immortal - HI - should be an event; this is simpler for now
+        if (_thingiesManager.EatThingy(this, _thingyToSeek))
+        {
+          StopSeeking();
+        }
       }
     }
 
+    /// <summary>
+    /// This method is called every few seconds to keep requesting for a thingy to seek from the Thingies Manager.
+    /// </summary>
     private void KeepRequestingThingiesToSeek()
     {
       if (_thingyToSeek != null)

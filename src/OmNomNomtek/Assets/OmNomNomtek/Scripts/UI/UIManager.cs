@@ -55,11 +55,13 @@ namespace OmNomNomtek.UI
 
     public void BindThingyList(List<ThingyListConfig.ThingyItemConfig> items)
     {
+      // remove all existing list items
       _scrollViewContent
         .GetChildren()
         .ToList()
         .ForEach(Destroy);
 
+      // create and bind new list items
       foreach (ThingyListConfig.ThingyItemConfig itemConfig in items)
       {
         GameObject listItem = Instantiate(_listItemPrefab, _scrollViewContent.transform);
@@ -82,6 +84,7 @@ namespace OmNomNomtek.UI
         || filterIsEmpty
         || tli.Title.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0;
 
+      // activate/deactivate list items based on the filter
       _scrollViewContent
         .GetComponentsInChildren<ThingyListItem>(includeInactive: true)
         .ForEach(tli => tli.gameObject.SetActive(ifMatchesFilter(tli)));
@@ -114,6 +117,7 @@ namespace OmNomNomtek.UI
 
     private void ToggleSidePanel(bool shouldBeVisible)
     {
+      // slide the panel left or right based on whether it should be visible
       _sidePanel.transform.DOMoveX(
         endValue:
           shouldBeVisible
