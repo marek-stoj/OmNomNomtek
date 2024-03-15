@@ -38,6 +38,7 @@
   - translation constraint (XZ plane)
 
 # Non-func requirements
+
   - Solution reliability, no bugs in scenarios described above
   - Architecture approach - don’t worry about over-engineering too much - we would like to see how you approach a real project. If you think you can make something better, but you don’t have time for it - tell us about it during the interview.
   - Code readability; (? comments ?)
