@@ -24,6 +24,7 @@ namespace OmNomNomtek.UI
     [SerializeField]
     private Button _button;
 
+    // TODO: 2024-03-15 - Immortal - HI - for binding we should use something like Peppermint DataBinding
     public void Bind(ThingyListConfig.ThingyItemConfig itemConfig)
     {
       _title.text = itemConfig.Title;

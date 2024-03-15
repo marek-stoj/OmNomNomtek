@@ -53,6 +53,7 @@ namespace OmNomNomtek.UI
       // do nothing
     }
 
+    // TODO: 2024-03-15 - Immortal - HI - for binding we should use something like Peppermint DataBinding
     public void BindThingyList(List<ThingyListConfig.ThingyItemConfig> items)
     {
       // remove all existing list items

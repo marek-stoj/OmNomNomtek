@@ -50,22 +50,22 @@ namespace OmNomNomtek.Domain
         Vector3 directionTowardsThingy =
           _thingyToSeek.transform.position - this.transform.position;
 
-        Vector3 translationVector =
-          directionTowardsThingy.normalized * _movementSpeed * Time.fixedDeltaTime;
-
-        // here we're constraining the movement to the XZ plane
-        this.transform.position +=
-          new Vector3(
-            translationVector.x,
-            0.0f,
-            translationVector.z);
-
         // lerp the rotation towards the thingy using the configured rotation speed
         this.transform.rotation = Quaternion.Lerp(
           this.transform.rotation,
           Quaternion.LookRotation(directionTowardsThingy),
           _rotationSpeed * Time.fixedDeltaTime
         );
+
+        // move along our forward direction; movement constrained to the XZ plane
+        Vector3 translationVector =
+          this.transform.forward * _movementSpeed * Time.fixedDeltaTime;
+
+        this.transform.position +=
+          new Vector3(
+            translationVector.x,
+            0.0f,
+            translationVector.z);
       }
     }
 
