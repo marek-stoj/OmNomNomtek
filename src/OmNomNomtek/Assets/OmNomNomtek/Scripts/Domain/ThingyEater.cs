@@ -1,3 +1,4 @@
+using System;
 using ImmSoft.UnityToolbelt.Utils;
 using OmNomNomtek.Services;
 using Unity.VisualScripting;
@@ -16,10 +17,21 @@ namespace OmNomNomtek.Domain
     [SerializeField]
     private Thingy _thingyToSeek;
 
+    private bool _isInitialized;
     private ThingiesManager _thingiesManager;
+
+    private void Start()
+    {
+      EnsureIsInitialized();
+    }
 
     private void FixedUpdate()
     {
+      if (!_isInitialized)
+      {
+        return;
+      }
+
       if (_thingiesManager.IsBeingCarried(this.gameObject))
       {
         return;
@@ -56,6 +68,45 @@ namespace OmNomNomtek.Domain
       }
     }
 
+    public void Init(ThingiesManager thingiesManager)
+    {
+      _thingiesManager = thingiesManager;
+    }
+
+    public void StartRequestingForThingyToSeek()
+    {
+      EnsureIsInitialized();
+
+      this.RunEverySeconds(
+        _thingiesManager.SeekRequestFrequencyInSeconds,
+         KeepRequestingThingiesToSeek
+      );
+    }
+
+    public void StartSeeking(Thingy thingyToSeek)
+    {
+      EnsureIsInitialized();
+
+      _thingyToSeek = thingyToSeek;
+    }
+
+    public void StopSeeking()
+    {
+      EnsureIsInitialized();
+
+      _thingyToSeek = null;
+    }
+
+    private void EnsureIsInitialized()
+    {
+      if (!_isInitialized)
+      {
+        string errorMessage = $"ThingyEater '{this.name}' is not initialized. Please call {nameof(Init)} first.";
+
+        throw new InvalidOperationException(errorMessage);
+      }
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
       if (_thingyToSeek == null || _thingiesManager.IsBeingCarried(this.gameObject))
@@ -70,29 +121,6 @@ namespace OmNomNomtek.Domain
 
         StopSeeking();
       }
-    }
-
-    public void Init(ThingiesManager thingiesManager)
-    {
-      _thingiesManager = thingiesManager;
-    }
-
-    public void StartRequestingForThingyToSeek()
-    {
-      this.RunEverySeconds(
-        _thingiesManager.SeekRequestFrequencyInSeconds,
-         KeepRequestingThingiesToSeek
-      );
-    }
-
-    public void StartSeeking(Thingy thingyToSeek)
-    {
-      _thingyToSeek = thingyToSeek;
-    }
-
-    public void StopSeeking()
-    {
-      _thingyToSeek = null;
     }
 
     private void KeepRequestingThingiesToSeek()

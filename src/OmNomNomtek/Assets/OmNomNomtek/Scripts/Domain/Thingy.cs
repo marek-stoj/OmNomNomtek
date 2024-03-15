@@ -1,3 +1,4 @@
+using System;
 using OmNomNomtek.Services;
 using OmNomNomtek.Utils;
 using UnityEngine;
@@ -15,6 +16,7 @@ namespace OmNomNomtek.Domain
 
     private bool _isBeingCarried;
 
+    private bool _isInitialized;
     private ThingiesManager _thingiesManager;
 
     private void Awake()
@@ -27,11 +29,18 @@ namespace OmNomNomtek.Domain
 
     private void Start()
     {
+      EnsureIsInitialized();
+
       UpdatePosition();
     }
 
     private void Update()
     {
+      if (!_isInitialized)
+      {
+        return;
+      }
+
       if (_isBeingCarried)
       {
         UpdatePosition();
@@ -41,10 +50,14 @@ namespace OmNomNomtek.Domain
     public void Init(ThingiesManager thingiesManager)
     {
       _thingiesManager = thingiesManager;
+
+      _isInitialized = true;
     }
 
     public void StartCarrying()
     {
+      EnsureIsInitialized();
+
       _rigidbody.isKinematic = true;
       _isBeingCarried = true;
 
@@ -53,12 +66,26 @@ namespace OmNomNomtek.Domain
 
     public void StopCarrying()
     {
+      EnsureIsInitialized();
+
       _rigidbody.isKinematic = _initialIsKinematic;
       _isBeingCarried = false;
     }
 
+    private void EnsureIsInitialized()
+    {
+      if (!_isInitialized)
+      {
+        string errorMessage = $"Thingy '{this.name}' is not initialized. Please call {nameof(Init)} first.";
+
+        throw new InvalidOperationException(errorMessage);
+      }
+    }
+
     private void UpdatePosition()
     {
+      EnsureIsInitialized();
+
       Vector3? newPosition = null;
 
       Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
