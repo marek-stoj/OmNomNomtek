@@ -127,5 +127,7 @@ namespace OmNomNomtek.UI
         duration: _SidePanelCloseDurationInSeconds
       );
     }
+
+    public int ItemsCount => _scrollViewContent.transform.childCount;
   }
 }
