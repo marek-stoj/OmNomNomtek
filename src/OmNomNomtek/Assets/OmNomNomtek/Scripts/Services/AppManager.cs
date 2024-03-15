@@ -8,22 +8,19 @@ namespace OmNomNomtek.Services
 {
   public class AppManager : MonoBehaviour
   {
-    [SerializeField]
-    // [Inject]
+    [Inject]
     private UIManager _uiManager;
 
-    [SerializeField]
-    // [Inject]
+    [Inject]
     private ThingyListConfig _thingyListConfig;
 
-    [Inject]
     private ISampleDependency _sampleDependency;
 
-    // [Inject]
-    // private void Construct(ISampleDependency sampleDependency)
-    // {
-    //   _sampleDependency = sampleDependency;
-    // }
+    [Inject]
+    private void Construct(ISampleDependency sampleDependency)
+    {
+      _sampleDependency = sampleDependency;
+    }
 
     private void Awake()
     {

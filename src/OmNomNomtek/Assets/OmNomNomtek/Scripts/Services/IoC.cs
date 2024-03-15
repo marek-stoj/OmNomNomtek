@@ -1,5 +1,6 @@
 using OmNomNomtek.Config;
 using OmNomNomtek.UI;
+using UnityEngine;
 using Zenject;
 
 namespace OmNomNomtek.Services
@@ -12,6 +13,9 @@ namespace OmNomNomtek.Services
   /// </remarks>
   public class IoC : MonoInstaller
   {
+    [SerializeField]
+    private ThingyListConfig _thingyListConfig;
+
     public override void InstallBindings()
     {
       Container.Bind<ISampleDependency>()
@@ -19,14 +23,13 @@ namespace OmNomNomtek.Services
         .AsSingle()
         .NonLazy();
 
-      // Container.Bind<UIManager>()
-      //   .FromComponentInHierarchy()
-      //   .AsSingle();
+      Container.Bind<UIManager>()
+        .FromComponentInHierarchy()
+        .AsSingle();
 
-      // Container.Bind<ThingyListConfig>()
-      //   .FromResource("OmNomNomtek/Config/DefaultThingyListConfig")
-      //   .AsSingle()
-      //   .NonLazy();
+      Container.Bind<ThingyListConfig>()
+        .FromScriptableObject(_thingyListConfig)
+        .AsSingle();
     }
   }
 }
