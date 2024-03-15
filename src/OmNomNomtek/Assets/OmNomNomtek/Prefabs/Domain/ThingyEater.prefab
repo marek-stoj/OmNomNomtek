@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _movementSpeed: 1
-  _rotationSpeed: 3
+  _rotationSpeed: 4
   _thingyToSeek: {fileID: 0}
 --- !u!114 &7214312452942426915
 MonoBehaviour:

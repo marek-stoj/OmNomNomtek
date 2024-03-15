@@ -902,7 +902,7 @@ MonoBehaviour:
   _thingiesParent: {fileID: 397521627}
   _floor: {fileID: 656497941}
   _defaultPlacementDepth: 5
-  _seekRequestFrequencyInSeconds: 0.5
+  _seekRequestFrequencyInSeconds: 0.08333335
   _placementAboveFloorOffsetMultiplier: 1
 --- !u!1 &656497941
 GameObject:

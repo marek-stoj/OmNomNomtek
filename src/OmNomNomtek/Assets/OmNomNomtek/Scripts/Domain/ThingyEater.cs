@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace OmNomNomtek.Domain
 {
+  // TODO: 2024-03-15 - Immortal - HI - we should somehow handle collisions between the Eaters themselves
   public class ThingyEater : MonoBehaviour
   {
     [SerializeField]
